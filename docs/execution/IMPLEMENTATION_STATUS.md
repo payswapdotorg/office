@@ -1,8 +1,17 @@
 # Office Implementation Status
 
-Status: production implementation STARTED — Phase 0 COMPLETE (5/40 items done); Phase 1 in progress (OFF-005 + OFF-007 dispatched).
+Status: production implementation STARTED — Phase 0 COMPLETE (6/40 items done); Phase 1 in progress (OFF-005 DONE; OFF-007 in flight).
 
 ## Completed work items
+
+### OFF-005 Event ledger and transactional outbox — DONE (2026-09-12)
+
+- Merge: PR #14 squash-merged as `7a45cf7` on `main`.
+- Acceptance evidence: lint 0; typecheck 0; `pnpm test` **406/406** (66 new in @office/events incl. **45 integration tests on real PostgreSQL**); architecture 5/5; clean tree (packages/events/** + lockfile only).
+- CI evidence: both check-runs `success` on `9f16483` (push + pull_request, same four gates with postgres service).
+- Acceptance gates proven: mutation + event + outbox commit atomically (a failure after the state write discards ALL three — no partial anything); duplicate delivery harmless (consumer-cursor no-op replay); deterministic dense strictly-monotonic per-aggregate sequences (race-safe under concurrent appends); causation/correlation propagation (command → event → chained events, chain roots null); outbox dispatch exactly-once-per-row under duplicate processing; ledger immutability enforced AT THE DATABASE LEVEL (UPDATE/DELETE rejected); tenant isolation with no existence oracle (A12).
+- Produced `@office/events`: appendEvent (caller-supplied transaction — never opens its own), enqueueOutbox (same-transaction), consumeIdempotently (durable cursor), readEventById/readAggregateEvents/causedByCommand/causedByEvent, outbox fetch/mark/failure-retry lifecycle, migrations co-located at packages/events/migrations/ (0003 event ledger, 0004 outbox + cursors) composed via EVENTS_MIGRATIONS_DIR + the persistence migrator. For OFF-007+/OFF-013/OFF-016 consumption.
+- Review gates: ownership exact (packages/events/** + pnpm-lock.yaml); no new external dependencies (3 workspace deps only: contracts/domain-kernel/persistence); no provider vocabulary; secrets scan clean. Worker session `off-005` (chat.z.ai agents tab, GLM-5.3/Full-Stack); verified independently by the Tech Lead at a fresh checkout.
 
 ### OFF-004 Database foundation — DONE (2026-09-12)
 
@@ -47,7 +56,8 @@ Status: production implementation STARTED — Phase 0 COMPLETE (5/40 items done)
 
 ## Current ready queue
 
-- `OFF-005` Event ledger and transactional outbox (`packages/events`; depends OFF-003 ✅ + OFF-004 ✅) and `OFF-007` Enterprise/project identity model (`packages/domain/organization`, `packages/domain/projects`; depends OFF-004 ✅ + OFF-006 ✅) — both READY and dispatched in parallel through the replay worker channel. Worker cap 3 respected.
+- `OFF-007` Enterprise/project identity model (`packages/domain/organization`, `packages/domain/projects`; depends OFF-004 ✅ + OFF-006 ✅) — in flight through the replay worker channel.
+- NEXT WAVE (unblocked the moment OFF-007 merges; worker cap 3): `OFF-008` Documents/evidence model, `OFF-009` Work/field model, `OFF-010` Schedule/program-of-work model (all depend OFF-004 ✅ + OFF-005 ✅ + OFF-006 ✅ + OFF-007).
 
 ## After OFF-005 + OFF-007
 

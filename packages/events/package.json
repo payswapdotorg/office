@@ -1,0 +1,19 @@
+{
+  "name": "@office/events",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Office event ledger and transactional outbox (OFF-005): the append-only event ledger with ledger-assigned per-aggregate sequences and deterministic event ids, the transactional outbox enqueued in the same transaction as state writes, and the idempotent consumer cursor with causation/correlation propagation. Depends only on @office/contracts, @office/domain-kernel, and @office/persistence.",
+  "sideEffects": false,
+  "main": "./src/index.ts",
+  "types": "./src/index.ts",
+  "exports": {
+    ".": "./src/index.ts",
+    "./package.json": "./package.json"
+  },
+  "dependencies": {
+    "@office/contracts": "workspace:^",
+    "@office/domain-kernel": "workspace:^",
+    "@office/persistence": "workspace:^"
+  }
+}

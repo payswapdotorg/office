@@ -213,6 +213,18 @@ importers:
         specifier: workspace:^
         version: link:../contracts
 
+  packages/events:
+    dependencies:
+      '@office/contracts':
+        specifier: workspace:^
+        version: link:../contracts
+      '@office/domain-kernel':
+        specifier: workspace:^
+        version: link:../domain-kernel
+      '@office/persistence':
+        specifier: workspace:^
+        version: link:../persistence
+
   packages/persistence:
     dependencies:
       '@office/contracts':

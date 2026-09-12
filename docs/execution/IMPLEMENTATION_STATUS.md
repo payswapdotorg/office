@@ -1,8 +1,26 @@
 # Office Implementation Status
 
-Status: production implementation STARTED — Phase 1 COMPLETE (10/40 items done: OFF-001..OFF-010). Next wave READY: OFF-011 / OFF-012 (both depend only on merged items) — dispatched in parallel; OFF-013 unblocks when both merge.
+Status: production implementation STARTED — 12/40 items done (OFF-001..OFF-012: all six canonical domain waves + foundation). Next wave READY: OFF-013 (relationship engine) + OFF-020 (adapter SDK) — dispatched in parallel; OFF-014/OFF-021+ unblock behind them.
 
 ## Completed work items
+
+### OFF-012 Contracts/change model — DONE (2026-09-12)
+
+- Merge: PR #21 squash-merged as `5970e9f` on `main` (supersedes #20, auto-closed by a premature head-branch deletion during the parallel-lockfile-conflict recovery — the branch was rebased onto post-OFF-011 main, lockfile regenerated, gates re-run green locally at 7009b43).
+- Worker: local subagent (2 attempts; attempt 2 audited the inherited ~9.1K-line tree, fixed 4 inherited test defects + one 6-line source defect (parse.ts bracket-path convention `field[2]`), wrote the README).
+- Acceptance evidence (station-verified fresh checkout): install --frozen-lockfile 0; lint 0; typecheck 0; `pnpm test` **1074/1074** (113 new in @office/domain-contracts across 7 suites); architecture 5/5.
+- Acceptance gates proven: change events link to scope/evidence/cost/schedule via TYPED EntityId/EntityRef links only — no copied entity data, no domain-to-domain imports; links immutable once recorded; change-order lifecycle submitted → approved/rejected → executed explicit/auditable/one-way (executing supersedes the originating change event's proposed state; rejected never mutate scope); contract lifecycle with one-way archive + deny-by-default authorization + A12 both directions; deterministic full-stream replay (identical states AND event streams); optimistic concurrency typed conflicts.
+- Produced `@office/domain-contracts`: contract/scope-obligation/change-event/change-order/claim-reference model; the typed-link discipline for OFF-013/OFF-014 consumption.
+- Review gates: ownership exact; no domain-to-domain imports; no provider vocabulary; secrets scan clean.
+
+### OFF-011 Cost/budget/commitment model — DONE (2026-09-12)
+
+- Merge: PR #19 squash-merged as `e8723de` on `main`.
+- Worker: local subagent (2 attempts; attempt 2 fixed 6 inherited defect clusters incl. a semantic ledger-sink owning-root resolution bug (commitment events now stream under the commitment aggregate), wrote the 125-test acceptance suite + README).
+- Acceptance evidence (station-verified fresh checkout): install --frozen-lockfile 0; lint 0; typecheck 0; `pnpm test` **1086/1086** (125 new in @office/domain-cost across 7 suites); architecture 5/5.
+- Acceptance gates proven: budget revisions immutable (prior revision byte-identical after supersession; balances computed from the current revision); atomic balance updates (optimistic concurrency typed conflicts, zero partial state on failing-sink abort); immutable commercial event history (full-stream replay → identical states AND event streams); A12 both directions; deny-by-default incl. the stronger projects.write revision gate; committed-vs-budget and invoiced-vs-committed balances as deterministic pure functions (computed, never stored-and-drifted).
+- Produced `@office/domain-cost`: budget/cost-item/commitment/invoice/payment-reference model with cost-impact interfaces for OFF-014.
+- Review gates: ownership exact; no domain-to-domain imports; no provider vocabulary; secrets scan clean.
 
 ### OFF-009 Work/field model — DONE (2026-09-12)
 

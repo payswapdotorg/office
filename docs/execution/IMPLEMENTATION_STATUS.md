@@ -1,8 +1,35 @@
 # Office Implementation Status
 
-Status: production implementation STARTED — Phase 1 in progress (7/40 items done: OFF-001..OFF-007). Next wave READY: OFF-008 / OFF-009 / OFF-010 (all depend only on merged items) — dispatched in parallel.
+Status: production implementation STARTED — Phase 1 COMPLETE (10/40 items done: OFF-001..OFF-010). Next wave READY: OFF-011 / OFF-012 (both depend only on merged items) — dispatched in parallel; OFF-013 unblocks when both merge.
 
 ## Completed work items
+
+### OFF-009 Work/field model — DONE (2026-09-12)
+
+- Merge: PR #18 squash-merged as `744e88e` on `main`.
+- Worker: local subagent (3 attempts; attempt 3 rebased the inherited ~10K-line uncommitted tree onto the merged 008/010 main, fixed 15 typecheck + 2 lint defects in inherited tests, wrote the README).
+- Acceptance evidence (station-verified fresh checkout): install --frozen-lockfile 0; lint 0; typecheck 0; `pnpm test` **961/961** (160 new in @office/domain-field across 8 suites); architecture 5/5.
+- Acceptance gates proven: offline-style capture with client-supplied idempotency key + client-observed timestamp (same-key replay = exactly-once, no duplicate aggregate/event; different payload same key = typed idempotency-conflict); deny-by-default authorization incl. cross-tenant/cross-project (A12); failing-sink atomicity; in-memory projection rebuilt from events answering per-project reads (projection≡aggregate-state equivalence).
+- Produced `@office/domain-field`: field events, daily logs, issues, inspections; the offline-capture/replay contract; the read-model projection; EventSink port + ledger-backed adapter (@office/events appendEvent+enqueueOutbox, same transaction).
+- Review gates: ownership exact (packages/domain/field/** + lockfile additive importer); @office/persistence imported for the port's SqlExecutor type only (same pattern as 007/008); no domain-to-domain imports; no provider vocabulary; secrets scan clean.
+
+### OFF-010 Schedule/program-of-work model — DONE (2026-09-12)
+
+- Merge: PR #17 squash-merged as `c6e77c5` on `main`.
+- Worker: local subagent (2 attempts; attempt 2 audited the inherited ~4.7K-line source, fixed one latent parser defect test-first — absent-vs-explicit-null change fields no longer clear pinned dates/parent — and wrote the full 149-test acceptance suite).
+- Acceptance evidence (station-verified fresh checkout): install 0; lint 0; typecheck 0; `pnpm test` **696/696** (149 new in @office/domain-schedule); architecture 5/5.
+- Acceptance gates proven: dependency validation (cycle/self/missing/duplicate typed rejections); baseline protection (always-forbidden mutation guards, snapshots bit-identical under progress/edits, DISTINCT stronger baseline capability for re-baseline); progress updates as events; deterministic CPM forecast (run-twice + shuffled-inputs determinism; FS/SS/FF/SF + lag semantics); deterministic end-to-end replay → identical states AND event streams.
+- Produced `@office/domain-schedule`: the canonical provider-independent schedule contract (activities, dependencies, milestones, baselines, progress, forecast + variance); EventSink port + ledger-backed adapter.
+- Review gates: ownership exact; no domain-to-domain imports; NO provider vocabulary (fragment-assembled p6/ms-project asserted absent by the boundary test); secrets scan clean.
+
+### OFF-008 Documents and evidence model — DONE (2026-09-12)
+
+- Merge: PR #16 squash-merged as `2fc035e` on `main`.
+- Worker: local subagent (2 attempts; attempt 2 finished the inherited ~5.6K-line tree: fixed 2 lint + 21 typecheck defects + 6 buggy tests, added the two missing acceptance proofs, wrote the README).
+- Acceptance evidence (station-verified fresh checkout): install --frozen-lockfile 0; lint 0; typecheck 0; `pnpm test` **652/652** (105 new in @office/domain-documents); architecture 5/5.
+- Acceptance gates proven: revision supersession chain (R1→R2→R3 explicit chain, full history readable, R1 byte-identical after supersession); revisions immutable (re-attach same revision id with different content → typed conflict + rollback); evidence references immutable + auditable (pin entity+document+revision; creation emits envelope with scope/actor/causation); ObjectStorage port content-addressed with in-memory implementation (A6: no provider adapter).
+- Produced `@office/domain-documents`: document/revision/evidence aggregates; ObjectStorage port; EventSink port mirroring OFF-007's shape exactly. For OFF-012/013/016 consumption.
+- Review gates: ownership exact (packages/domain/documents/** + lockfile new importer, workspace links only); @office/persistence for the port's SqlExecutor type only; no domain-to-domain imports; no @office/events import (port mirroring suffices at this layer); no provider vocabulary; secrets scan clean.
 
 ### OFF-007 Enterprise/project identity model — DONE (2026-09-12)
 

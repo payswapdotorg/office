@@ -1,8 +1,26 @@
 # Office Implementation Status
 
-Status: production implementation STARTED — 12/40 items done (OFF-001..OFF-012: all six canonical domain waves + foundation). Next wave READY: OFF-013 (relationship engine) + OFF-020 (adapter SDK) — dispatched in parallel; OFF-014/OFF-021+ unblock behind them.
+Status: production implementation STARTED — 14/40 items done (OFF-001..OFF-013 + OFF-020). Next wave READY: OFF-014 (margin engine) + OFF-016 (workflow engine) + OFF-028 (realtime subscription) — dispatched in parallel (highest downstream fan-in); provider adapters OFF-021/022/023 queued behind them.
 
 ## Completed work items
+
+### OFF-020 Adapter SDK — DONE (2026-09-12)
+
+- Merge: PR #23 squash-merged as `afb4d86` on `main`.
+- Worker: local subagent (attempt 1 wrote all source; attempt 2 wrote all 13 test files + README and died at the gates phase; the Tech Lead finished: fixed 13 branded-literal test defects, ran the gates, committed, pushed).
+- Acceptance evidence (station-verified fresh checkout): install --frozen-lockfile 0; lint 0; typecheck 0; `pnpm test` **1331/1331** (245 new in @office/adapters-sdk across 13 suites); architecture 5/5.
+- Acceptance gates proven: fake-provider ROUND-TRIP (sync out with snapshots + cursor advance; webhook in with normalized envelope + SourceRef resolution; conflict detection explicit with both sides; replay idempotent no-op) WITHOUT importing any core provider code; deterministic mapping (same provider object → same canonical id; second object → existing canonical id = explicit conflict, never silent overwrite); cursor replay-safety (restart re-processes nothing checkpointed; foreign stream/tenant cursor typed-rejected); NO destructive auto-resolution (conflicts land in detected state; resolution is an explicit command with audit refs); A12 isolation on mapping records.
+- Produced `@office/adapters-sdk`: the provider-neutral Adapter contract, SourceRef identity mapping (A10: provider ids never primary keys), SyncCursor, Conflict, ProviderSnapshot, webhook normalization (signature verifier port), the fake-provider fixture. For OFF-021/022/023/024 consumption.
+- Review gates: ownership exact (packages/adapters-sdk/** + lockfile); ports only — NO I/O anywhere; no provider vocabulary (generic fake-crm/fake-pm kinds); no domain-package imports; secrets scan clean.
+
+### OFF-013 Cross-domain relationship engine — DONE (2026-09-12)
+
+- Merge: PR #22 squash-merged as `c990300` on `main`.
+- Worker: local subagent (2 attempts; attempt 2 wrote the 31-test acceptance suite + README, fixed 6 inherited defects, wired root test discovery with the additive OFF-007-pattern widening for packages/intelligence/* — required for workspace linking).
+- Acceptance evidence (station-verified fresh checkout): install --frozen-lockfile 0; lint 0; typecheck 0; `pnpm test` **1230/1230** (31 new in @office/intelligence-relationships); architecture 5/5.
+- Acceptance gates proven: deterministic traversal for the key construction causal chains (golden fixtures: schedule dependency chain; change event evidencedBy revision + impacting cost/schedule; field-issue → change order → activity covered transitively with a documented envelope-gap note — no data invented); projection determinism + A7 rebuildability (same stream twice → identical index; rebuilt from scratch → identical index); authorization AT TRAVERSAL TIME (A12 both directions, no existence oracle, no leakage through the graph); per-edge provenance (producing event id) + causal-chain reconstruction through command causation; unknown event names skipped deterministically.
+- Produced `@office/intelligence-relationships`: the affects/dependsOn/evidencedBy/impacts/derivesFrom index, TraversalQuery, causal-chain queries. For OFF-014/015/016/018/019 consumption.
+- Review gates: ownership exact (packages/intelligence/relationships/** + lockfile + the two documented additive root-config widenings); consumes event SHAPES via @office/events/@office/contracts only — no domain-package imports; no provider vocabulary; secrets scan clean.
 
 ### OFF-012 Contracts/change model — DONE (2026-09-12)
 

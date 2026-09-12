@@ -1,0 +1,21 @@
+{
+  "name": "@office/domain-contracts",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Office contracts/change domain module (OFF-012): the canonical contracts and change model — the project-scoped Contract aggregate (parties as typed person/company links, canonical minor-unit contract value, forward-only execution status, explicit one-way archive) owning its immutable scope obligations, the ChangeEvent aggregate binding change to scope/evidence/cost/schedule through TYPED cross-entity links (ids and refs only — never copied data, immutable once recorded), the ChangeOrder lifecycle (submitted -> approved/rejected -> executed, executing supersedes the originating change event's proposed state, rejected orders never mutate scope), and immutable claim references binding claims to evidence + change orders. Pure domain: no SQL, no migrations, no repository layer — deterministic, in-memory-testable, injected clock/id suppliers. Depends only on @office/contracts, @office/domain-kernel, @office/authz, @office/events (the thin ledger-backed EventSink adapter) and @office/persistence (the SqlExecutor type of the mirrored EventSink port).",
+  "sideEffects": false,
+  "main": "./src/index.ts",
+  "types": "./src/index.ts",
+  "exports": {
+    ".": "./src/index.ts",
+    "./package.json": "./package.json"
+  },
+  "dependencies": {
+    "@office/authz": "workspace:^",
+    "@office/contracts": "workspace:^",
+    "@office/domain-kernel": "workspace:^",
+    "@office/events": "workspace:^",
+    "@office/persistence": "workspace:^"
+  }
+}

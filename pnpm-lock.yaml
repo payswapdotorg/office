@@ -187,6 +187,8 @@ importers:
 
   apps/web: {}
 
+  packages/contracts: {}
+
   packages/test-fixtures: {}
 
 packages:

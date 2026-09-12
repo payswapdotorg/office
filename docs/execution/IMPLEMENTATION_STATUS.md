@@ -1,8 +1,18 @@
 # Office Implementation Status
 
-Status: production implementation STARTED — Phase 0 COMPLETE (6/40 items done); Phase 1 in progress (OFF-005 DONE; OFF-007 in flight).
+Status: production implementation STARTED — Phase 1 in progress (7/40 items done: OFF-001..OFF-007). Next wave READY: OFF-008 / OFF-009 / OFF-010 (all depend only on merged items) — dispatched in parallel.
 
 ## Completed work items
+
+### OFF-007 Enterprise/project identity model — DONE (2026-09-12)
+
+- Merge: PR #15 squash-merged as `cbc0346` on `main`.
+- Worker: local subagent (2 attempts: attempt 1 completed the organization package, attempt 2 audited + fixed inherited defects and built the projects package). The chat.z.ai replay channel was down (backend outage: http-500 on chat GETs, capacity wall on creates) — the Tech Lead switched the item to a local worker rather than lose deadline time, and retired the replay session cleanly.
+- Acceptance evidence (station-verified at a fresh checkout of off-007 @ 9e24d1c): pnpm install --frozen-lockfile 0; lint 0; typecheck 0; `pnpm test` **547/547** (141 new: 68 organization + 73 projects, incl. **48 real-PostgreSQL integration tests** on the embedded harness); architecture 5/5.
+- CI evidence: both check-runs `success` on `9e24d1c` (push + pull_request).
+- Acceptance gates proven: create/update/archive lifecycle WITH authorization (granted-with-capability vs typed denial regression tests incl. cross-tenant A12; denied commands never open a transaction); audit events through the EventSink port with scope/actor/source 'domain'/correlation+causation from the command envelope/before-after EntityRefs; deterministic canonical IDs (injected supplier sequence → same ids; parse via contracts); optimistic concurrency (stale version → typed conflict, state unchanged); repository integration tests prove tenant scope isolation for the new tables (no existence oracle).
+- Produced `@office/domain-organization` + `@office/domain-projects` (packages/domain/*): the canonical enterprise/project identity aggregates, the established domain-package pattern (state/parse/events/commands/index + repositories), the minimal EventSink port (`appendEvents(executor, events): Promise<Result<true, DomainError>>` + in-memory/failing sinks) that OFF-005's ledger implements at app wiring time, migrations 0100_organizations.sql + 0101_projects_lifecycle.sql (pure additive ALTER on 0002's projects table; co-located under packages/domain/*/migrations per the OFF-005 convention).
+- Review gates: ownership exact (packages/domain/** + lockfile + the two PRE-APPROVED additive root-config widenings: pnpm-workspace.yaml `packages/domain/*` glob + vitest include glob); no packages/events imports (dependency graph respected — 007 depends on 004+006 only); no new external dependencies; no provider vocabulary; secrets scan clean; frozen docs untouched; 0001/0002 + packages/persistence/src untouched.
 
 ### OFF-005 Event ledger and transactional outbox — DONE (2026-09-12)
 

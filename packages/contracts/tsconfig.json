@@ -1,0 +1,12 @@
+{
+  // @office/contracts TypeScript config (OFF-002).
+  // Extends the workspace base; the root tsconfig spans packages/**/*.ts for
+  // `pnpm typecheck`, so this package is typecheck-gated without a build
+  // step (see README.md — source package, no compilation).
+  "$schema": "https://json.schemastore.org/tsconfig",
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    "noEmit": true
+  },
+  "include": ["src"]
+}

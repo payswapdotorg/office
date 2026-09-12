@@ -1,0 +1,21 @@
+{
+  "name": "@office/domain-field",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Office work/field domain module (OFF-009): the project-scoped FieldEvent, DailyLog, Issue, and Inspection aggregates with offline-style idempotent capture (client idempotency key + client-observed timestamp, exactly-once replay through the domain-kernel IdempotencyRegistry), append-only daily-log entries and issue comments, one-way lifecycles, deny-by-default authorization through @office/authz, audit events through the EventSink port (mirroring the identity modules), a project read model rebuilt from the emitted events, and a thin ledger-backed EventSink adapter over @office/events. Pure domain: no SQL, no migrations, no repository layer — deterministic, in-memory-testable, injected clock/id suppliers. Depends only on @office/contracts, @office/domain-kernel, @office/authz, @office/persistence (the EventSink port's executor type), and @office/events (the ledger-backed sink adapter).",
+  "sideEffects": false,
+  "main": "./src/index.ts",
+  "types": "./src/index.ts",
+  "exports": {
+    ".": "./src/index.ts",
+    "./package.json": "./package.json"
+  },
+  "dependencies": {
+    "@office/authz": "workspace:^",
+    "@office/contracts": "workspace:^",
+    "@office/domain-kernel": "workspace:^",
+    "@office/events": "workspace:^",
+    "@office/persistence": "workspace:^"
+  }
+}

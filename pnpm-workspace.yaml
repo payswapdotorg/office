@@ -1,0 +1,7 @@
+# Office pnpm workspace (OFF-001).
+# Workspace layout: apps/* and packages/*
+# (see docs/superpowers/plans/2026-09-12-office-architecture-implementation.md
+# for the authoritative directory structure).
+packages:
+  - "apps/*"
+  - "packages/*"

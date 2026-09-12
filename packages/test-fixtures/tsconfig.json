@@ -1,0 +1,10 @@
+{
+  // @office/test-fixtures TypeScript config (OFF-001).
+  // Extends the workspace base; the root `tsconfig.json` also spans these
+  // sources for `pnpm typecheck`, and the root vitest config runs them.
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    "noEmit": true
+  },
+  "include": ["src"]
+}

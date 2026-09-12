@@ -1,0 +1,6 @@
+{
+  "name": "@office/test-fixtures",
+  "version": "0.0.0",
+  "private": true,
+  "description": "Deterministic test fixtures for the Office workspace. Currently provides the smoke fixture proving the root vitest setup discovers and runs tests inside workspace packages (OFF-001)."
+}

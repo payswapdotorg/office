@@ -1,0 +1,43 @@
+# Office CI (OFF-001).
+# Validates the repository toolchain on every push and pull request by
+# running the same four quality commands that run locally:
+# lint, typecheck, test, test:architecture — on pnpm (version pinned by the
+# `packageManager` field in package.json) and Node.js 22.
+name: CI
+
+on:
+  - push
+  - pull_request
+
+jobs:
+  toolchain:
+    name: "Toolchain gates (lint / typecheck / test / architecture)"
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+        # Version is read from the packageManager field in package.json.
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Lint
+        run: pnpm lint
+
+      - name: Typecheck
+        run: pnpm typecheck
+
+      - name: Test
+        run: pnpm test
+
+      - name: Architecture tests
+        run: pnpm test:architecture

@@ -1,0 +1,25 @@
+{
+  "name": "office",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "PaySwap Office — AI-native construction enterprise & project operating system (pnpm monorepo root). The frozen architecture and execution plan live under docs/.",
+  "packageManager": "pnpm@12.4.1",
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "lint": "eslint .",
+    "typecheck": "tsc --noEmit -p .",
+    "test": "vitest run",
+    "test:architecture": "vitest run tests/architecture"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.39.0",
+    "@types/node": "^22.20.0",
+    "eslint": "^9.39.0",
+    "typescript": "^5.9.0",
+    "typescript-eslint": "^8.70.0",
+    "vitest": "^5.0.0"
+  }
+}

@@ -1,0 +1,27 @@
+# Dependencies
+node_modules/
+
+# Build output and incremental build state
+dist/
+build/
+*.tsbuildinfo
+
+# Test and coverage artifacts
+coverage/
+
+# Environment — `.env*` files are ignored; `.env.example` is the committed contract
+.env
+.env.*
+!.env.example
+
+# Tooling caches
+.eslintcache
+.vite/
+
+# Logs
+*.log
+pnpm-debug.log*
+
+# OS / editor noise
+.DS_Store
+Thumbs.db

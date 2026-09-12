@@ -1,0 +1,24 @@
+{
+  // Office root TypeScript project (OFF-001).
+  // `pnpm typecheck` runs `tsc --noEmit -p .` against this config, spanning the
+  // whole workspace (root test tooling + every app/package source glob) so a
+  // single command gates strict compilation.
+  //
+  // Each app/package additionally owns a tsconfig.json extending
+  // tsconfig.base.json so editors and future per-package builds pick up the
+  // same strict settings. When apps/web gains real sources (OFF-030), this
+  // root may be restructured into a solution-style `references` config if
+  // per-package build boundaries need it.
+  "$schema": "https://json.schemastore.org/tsconfig",
+  "extends": "./tsconfig.base.json",
+  "compilerOptions": {
+    "noEmit": true
+  },
+  "include": [
+    "vitest.config.ts",
+    "tests/**/*.ts",
+    "apps/**/*.ts",
+    "packages/**/*.ts"
+  ],
+  "exclude": ["**/node_modules", "**/dist"]
+}

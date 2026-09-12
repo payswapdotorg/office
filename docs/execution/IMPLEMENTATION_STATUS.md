@@ -1,8 +1,16 @@
 # Office Implementation Status
 
-Status: production implementation STARTED — Phase 0 in progress (2/40 items done).
+Status: production implementation STARTED — Phase 0 COMPLETE (3/40 items done); Phase 1 in progress.
 
 ## Completed work items
+
+### OFF-003 Domain kernel and invariants — DONE (2026-09-12)
+
+- Merge: PR #11 squash-merged as `4e9913c` on `main`.
+- Acceptance evidence: clean `pnpm install` (incl. fresh-clone frozen-lockfile check); lint 0; typecheck 0; `pnpm test` **166/166** (75 new in domain-kernel); architecture 5/5; clean tree (19 package files + lockfile).
+- CI evidence: runs `34686984934` (push) + `34687263462` (pull_request) both `success` on `9140d6a`.
+- All four kernel invariants proven end-to-end: tenant isolation (A12 backstop), optimistic concurrency (typed conflict, never silent overwrite), idempotency (fingerprint registry, harmless replay vs typed conflict), invariant enforcement (state unchanged on violation).
+- Produced `@office/domain-kernel`: AggregateVersion, ConcurrencyToken/checkConcurrency, Aggregate/checkScopeCovers, DomainError taxonomy + toApiError bridge, Invariant/checkInvariants, CommandFingerprint/IdempotencyRegistry/withIdempotency, CommandHandler with injected clock/id suppliers. Imports ONLY @office/contracts (boundary self-gate).
 
 ### OFF-002 Canonical contract package — DONE (2026-09-12)
 
@@ -22,11 +30,11 @@ Status: production implementation STARTED — Phase 0 in progress (2/40 items do
 
 ## Current ready queue
 
-- `OFF-003` Domain kernel and invariants (`packages/domain-kernel`) — the only READY item; its declared dependency OFF-002 is DONE and verified.
+- `OFF-004` Database foundation (`packages/persistence`) and `OFF-006` Authorization and policy kernel (`packages/authz`) — both READY concurrently (dependencies OFF-002 + OFF-003 DONE). `OFF-005` waits for OFF-004. These two have disjoint ownership boundaries and may run in parallel (worker cap 3 is a ceiling, not a target).
 
-## After OFF-003
+## After OFF-004 + OFF-006
 
-- `OFF-004` Database foundation and `OFF-006` Authorization and policy kernel become READY concurrently (both depend on OFF-002 + OFF-003); `OFF-005` waits for OFF-004. Once OFF-002/OFF-003/OFF-004/OFF-006 are satisfied, the first substantial 3-worker domain wave is:
+- `OFF-005` (needs OFF-004) and `OFF-007` (needs OFF-004 + OFF-006) become eligible. Once OFF-002/OFF-003/OFF-004/OFF-006 are satisfied, the first substantial 3-worker domain wave is:
 
 - `OFF-008` Documents & Evidence
 - `OFF-009` Work & Field

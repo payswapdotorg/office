@@ -1,0 +1,12 @@
+{
+  // @office/domain-kernel TypeScript config (OFF-003).
+  // Extends the workspace base; the root tsconfig spans packages/**/*.ts for
+  // `pnpm typecheck`, so this package is typecheck-gated without a build
+  // step (source package, no compilation — same convention as contracts).
+  "$schema": "https://json.schemastore.org/tsconfig",
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    "noEmit": true
+  },
+  "include": ["src"]
+}

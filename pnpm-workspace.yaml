@@ -5,6 +5,10 @@
 packages:
   - "apps/*"
   - "packages/*"
+  # OFF-007 (pre-approved additive widening): the domain packages live one
+  # level deeper (packages/domain/<module>). Additive only — the existing
+  # globs above are untouched and remain authoritative for their trees.
+  - "packages/domain/*"
 # OFF-004: allow the embedded-postgres platform package to run its postinstall
 # (binary symlink hydration). pnpm 11+ reads build approvals from this file's
 # `allowBuilds` — the package.json `pnpm.onlyBuiltDependencies` field is

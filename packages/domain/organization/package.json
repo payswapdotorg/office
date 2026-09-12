@@ -1,0 +1,20 @@
+{
+  "name": "@office/domain-organization",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Office organization domain module (OFF-007): the canonical tenant-scoped Organization aggregate with create/update/archive lifecycle commands, deny-by-default authorization through @office/authz, audit events through a minimal typed EventSink port (transactional with the repository write), and deterministic Office-issued canonical ids. Depends only on @office/contracts, @office/domain-kernel, @office/authz, and @office/persistence.",
+  "sideEffects": false,
+  "main": "./src/index.ts",
+  "types": "./src/index.ts",
+  "exports": {
+    ".": "./src/index.ts",
+    "./package.json": "./package.json"
+  },
+  "dependencies": {
+    "@office/authz": "workspace:^",
+    "@office/contracts": "workspace:^",
+    "@office/domain-kernel": "workspace:^",
+    "@office/persistence": "workspace:^"
+  }
+}

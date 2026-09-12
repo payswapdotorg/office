@@ -4,7 +4,9 @@ Status: FROZEN EXECUTION BACKLOG
 
 ## Worker operating rule
 
-At most 3 implementation workers may be active concurrently. The Tech Lead chooses one item from each ready lane only when its prerequisites are complete. A worker must not modify files owned by another active worker except through the declared contract path.
+At most 3 implementation workers may be active concurrently. The Tech Lead selects only work items whose declared dependencies are merged and whose predecessor acceptance gates have passed.
+
+A worker must not modify files owned by another active worker except through the declared contract path. A work item is atomic: exactly one immutable ID, one ownership boundary, one acceptance gate, and one implementation branch/PR.
 
 ## Work item format
 
@@ -13,6 +15,7 @@ At most 3 implementation workers may be active concurrently. The Tech Lead choos
 - Every item has an independently testable acceptance gate.
 - Dependencies are contract dependencies, not convenience dependencies.
 - A worker may consume only artifacts named in `Produces` of completed prerequisites.
+- A work item must not be combined with another work-item ID in one branch/PR.
 
 ## Phase 0 — Governance and bootstrap
 
@@ -272,15 +275,11 @@ Depends on: OFF-039
 Produces: verified dependency graph, ready queue, no ambiguous ownership, and reproducible setup instructions.
 Acceptance: a fresh engineer can choose three ready work items from repo artifacts without conversation context.
 
-## Ready-lane policy
+## Ready-state algorithm
 
-At initial kickoff only OFF-001 is active. After bootstrap:
+A work item is READY iff every item named in its `Depends on` field is DONE and its declared outputs are present and verified. There are no implicit readiness lanes and no unnamed governance tasks.
 
-- Lane A: OFF-002
-- Lane B: tool/test hardening that does not alter contracts
-- Lane C: architecture documentation/contract fixture work approved by the Tech Lead
-
-Once OFF-002 and OFF-003 are complete, persistence, authorization, and domain models should be scheduled as three parallel lanes where dependencies permit.
+At repository bootstrap, only `OFF-001` is READY. After `OFF-001`, only `OFF-002` is READY. After `OFF-003`, `OFF-004` and `OFF-006` can become READY concurrently. The dependency graph remains authoritative at every later stage.
 
 ## Stop-the-line rules
 

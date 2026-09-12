@@ -1,0 +1,20 @@
+{
+  "name": "@office/intelligence-relationships",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Office cross-domain relationship engine (OFF-013): the canonical affects/depends-on/evidenced-by/impacts/derives-from relationship index over the enterprise graph — a deterministic, rebuildable read PROJECTION derived from the landed domain packages' event envelopes (never a second source of truth, freeze A2/A7), with traversal queries that enforce authorization at traversal time (deny-by-default, structural A12 isolation — cross-tenant/cross-project nodes are invisible, no existence oracle) and causal-chain queries that reconstruct the command/event chain that produced each relationship from the edges' event-id provenance. Depends only on @office/contracts, @office/domain-kernel, @office/authz, and @office/events (the ledger READ surface + deterministic ledger event id derivation — this package never writes the ledger).",
+  "sideEffects": false,
+  "main": "./src/index.ts",
+  "types": "./src/index.ts",
+  "exports": {
+    ".": "./src/index.ts",
+    "./package.json": "./package.json"
+  },
+  "dependencies": {
+    "@office/authz": "workspace:^",
+    "@office/contracts": "workspace:^",
+    "@office/domain-kernel": "workspace:^",
+    "@office/events": "workspace:^"
+  }
+}

@@ -187,6 +187,15 @@ importers:
 
   apps/web: {}
 
+  packages/authz:
+    dependencies:
+      '@office/contracts':
+        specifier: workspace:^
+        version: link:../contracts
+      '@office/domain-kernel':
+        specifier: workspace:^
+        version: link:../domain-kernel
+
   packages/contracts: {}
 
   packages/domain-kernel:

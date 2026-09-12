@@ -9,6 +9,12 @@ packages:
   # level deeper (packages/domain/<module>). Additive only — the existing
   # globs above are untouched and remain authoritative for their trees.
   - "packages/domain/*"
+  # OFF-013 (additive widening, mirroring the OFF-007 pattern): the
+  # intelligence packages live one level deeper too
+  # (packages/intelligence/<module>). Additive only — existing globs above
+  # are untouched; without this glob pnpm does not link the package's
+  # workspace dependencies and the root vitest run cannot resolve them.
+  - "packages/intelligence/*"
 # OFF-004: allow the embedded-postgres platform package to run its postinstall
 # (binary symlink hydration). pnpm 11+ reads build approvals from this file's
 # `allowBuilds` — the package.json `pnpm.onlyBuiltDependencies` field is

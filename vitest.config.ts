@@ -14,6 +14,10 @@ export default defineConfig({
       // (packages/domain/<module>/src). Additive only — existing globs above
       // are untouched.
       'packages/domain/*/src/**/*.test.ts',
+      // OFF-013 (additive widening, mirroring the OFF-007 pattern above):
+      // nested intelligence packages (packages/intelligence/<module>/src).
+      // Additive only — existing globs above are untouched.
+      'packages/intelligence/*/src/**/*.test.ts',
       'apps/*/src/**/*.test.ts',
     ],
   },

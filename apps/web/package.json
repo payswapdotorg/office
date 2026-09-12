@@ -1,0 +1,6 @@
+{
+  "name": "@office/web",
+  "version": "0.0.0",
+  "private": true,
+  "description": "Placeholder for the Office web client. Intentionally ships no code, dependencies, or scripts — the web application arrives with work item OFF-030. See this package's README.md."
+}

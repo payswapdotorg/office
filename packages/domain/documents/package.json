@@ -1,0 +1,20 @@
+{
+  "name": "@office/domain-documents",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Office documents & evidence domain module (OFF-008): the canonical project-scoped Document aggregate with immutable create-only revisions (explicit supersession chains), immutable EvidenceReference values that bind entities to a specific revision, a provider-neutral content-addressed ObjectStorage port, and audit events through the minimal typed EventSink port. Pure domain: no SQL, no migrations, no repository layer — deterministic, in-memory-testable, injected clock/id/hash suppliers. Depends only on @office/contracts, @office/domain-kernel, @office/authz, and @office/persistence (the SqlExecutor type of the EventSink port).",
+  "sideEffects": false,
+  "main": "./src/index.ts",
+  "types": "./src/index.ts",
+  "exports": {
+    ".": "./src/index.ts",
+    "./package.json": "./package.json"
+  },
+  "dependencies": {
+    "@office/authz": "workspace:^",
+    "@office/contracts": "workspace:^",
+    "@office/domain-kernel": "workspace:^",
+    "@office/persistence": "workspace:^"
+  }
+}

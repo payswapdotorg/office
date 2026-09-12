@@ -1,0 +1,13 @@
+{
+  // @office/domain-documents TypeScript config (OFF-008).
+  // Extends the workspace base (three levels up: packages/domain/documents
+  // -> repo root). The root tsconfig already spans packages/**/*.ts for
+  // `pnpm typecheck`, so this package is typecheck-gated without a build step
+  // (source package, no compilation — same convention as every @office pkg).
+  "$schema": "https://json.schemastore.org/tsconfig",
+  "extends": "../../../tsconfig.base.json",
+  "compilerOptions": {
+    "noEmit": true
+  },
+  "include": ["src"]
+}

@@ -5,3 +5,10 @@
 packages:
   - "apps/*"
   - "packages/*"
+# OFF-004: allow the embedded-postgres platform package to run its postinstall
+# (binary symlink hydration). pnpm 11+ reads build approvals from this file's
+# `allowBuilds` — the package.json `pnpm.onlyBuiltDependencies` field is
+# silently ignored — and `pnpm install` fails with ERR_PNPM_IGNORED_BUILDS
+# without an explicit approval.
+allowBuilds:
+  '@embedded-postgres/linux-x64': true

@@ -1,0 +1,19 @@
+{
+  "name": "@office/persistence",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Office PostgreSQL persistence foundation (OFF-004): ordered plain-SQL migrations with a transactional migrator, the TransactionRunner transactional boundary, tenant/project scoped query helpers, and typed reference repositories with optimistic concurrency. Depends only on @office/contracts, @office/domain-kernel, and pg.",
+  "sideEffects": false,
+  "main": "./src/index.ts",
+  "types": "./src/index.ts",
+  "exports": {
+    ".": "./src/index.ts",
+    "./package.json": "./package.json"
+  },
+  "dependencies": {
+    "@office/contracts": "workspace:^",
+    "@office/domain-kernel": "workspace:^",
+    "pg": "^8.23.0"
+  }
+}

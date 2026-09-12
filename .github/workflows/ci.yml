@@ -3,6 +3,11 @@
 # running the same four quality commands that run locally:
 # lint, typecheck, test, test:architecture — on pnpm (version pinned by the
 # `packageManager` field in package.json) and Node.js 22.
+#
+# OFF-004: the test gates run against a real PostgreSQL 17 service container.
+# DATABASE_URL points the persistence integration harness (CI mode) at it;
+# the harness never touches the referenced database directly — it creates an
+# isolated scratch database per run on the same server.
 name: CI
 
 on:
@@ -13,6 +18,20 @@ jobs:
   toolchain:
     name: "Toolchain gates (lint / typecheck / test / architecture)"
     runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:17
+        env:
+          POSTGRES_USER: office
+          POSTGRES_PASSWORD: office
+          POSTGRES_DB: office_test
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
     steps:
       - name: Check out repository
         uses: actions/checkout@v4
@@ -38,6 +57,10 @@ jobs:
 
       - name: Test
         run: pnpm test
+        env:
+          DATABASE_URL: postgres://office:office@localhost:5432/office_test
 
       - name: Architecture tests
         run: pnpm test:architecture
+        env:
+          DATABASE_URL: postgres://office:office@localhost:5432/office_test

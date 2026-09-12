@@ -1,90 +1,158 @@
 # Office Successor Tech Lead Handoff
 
+Status: AUDITED FOR TAKEOVER — architecture and execution controls verified; production implementation is intentionally not started.
+
 ## Mission
 
-Take this repository as the sole authoritative implementation context and lead delivery of the frozen Office architecture. Dispatch no more than three workers concurrently. Keep implementation aligned to the frozen ADRs and dependency graph.
+Take this repository as the sole authoritative implementation context and lead delivery of the frozen Office construction enterprise/project operating system. The product is an AI-native construction operating layer built around one canonical enterprise/project graph, immutable evidence-bearing events, governed workflows/actions, provider-neutral adapters, an app marketplace, and same-project/many-view clients.
 
-## First-day procedure
+## Important reality check
 
-1. Read `README.md` and every document under `docs/architecture/`.
-2. Read `docs/execution/WORK_ITEMS.md`, `DEPENDENCY_GRAPH.md`, and `DEFINITION_OF_DONE.md`.
-3. Inspect the actual repository tree and CI state; never infer implementation from these docs alone.
-4. Confirm the current work-item status against git history and closed/open issues.
-5. Select at most three ready work items from the graph.
-6. Before dispatching, write each worker a narrow brief containing the work-item ID, exact acceptance criteria, allowed directories, dependencies, and forbidden changes.
-7. Review each worker's diff against the frozen architecture before merging.
-8. Update work-item status in the issue and execution artifacts only after tests and conformance checks pass.
+This repository is currently an architecture/execution handoff, not a production implementation. Do not describe features as implemented until the corresponding work item acceptance evidence exists in git and CI.
 
-## Worker dispatch template
+## Non-negotiable architecture
+
+1. PostgreSQL owns canonical Office state.
+2. Enterprise Graph and Project Graph are canonical domain models.
+3. Domain mutations use immutable events and transactional outbox semantics.
+4. AI recommendations/actions require evidence, provenance, policy and typed commands.
+5. Agents and marketplace apps never perform arbitrary SQL writes.
+6. Procore/Autodesk/Primavera/ERP are adapters and external authorities during coexistence; provider semantics never leak into canonical domain contracts.
+7. Apps are extensions/views of the same project, not parallel project universes.
+8. Web, field, desktop, BIM/CAD, spreadsheet and scheduling clients are views over the same project state.
+9. Offline conflicts involving financial, contractual, access or schedule-baseline state are surfaced for resolution.
+10. The first architecture is a modular monolith; service extraction needs an operational justification.
+
+## Mandatory reading order
+
+1. `README.md`
+2. `AGENTS.md`
+3. `docs/architecture/ARCHITECTURE_FREEZE.md`
+4. every ADR under `docs/architecture/`
+5. `docs/execution/WORK_ITEMS.md`
+6. `docs/execution/DEPENDENCY_GRAPH.md`
+7. `docs/execution/DEFINITION_OF_DONE.md`
+8. the active work item's prerequisites and acceptance contract
+9. actual source tree, git history, CI state, and tests
+
+## First takeover procedure
+
+1. Inspect the repository tree before making any implementation assumptions.
+2. Confirm the current commit and branch state.
+3. Confirm that no undocumented production code exists.
+4. Check open/closed phase issues and reconcile them with git state.
+5. Treat `WORK_ITEMS.md` as the atomic backlog and `DEPENDENCY_GRAPH.md` as readiness authority.
+6. Calculate READY items from the dependency fields; do not use prose-created lanes.
+7. At initial bootstrap, dispatch only `OFF-001`.
+8. After `OFF-001`, dispatch `OFF-002`; after `OFF-003`, `OFF-004` and `OFF-006` can run in parallel.
+9. Keep at most 3 implementation workers active.
+10. Give each worker one OFF ID, one branch/PR, exact allowed ownership paths, direct prerequisite outputs, acceptance tests, and forbidden changes.
+11. Review the actual diff and acceptance evidence before merge.
+12. Update status only after verification passes.
+
+## Worker dispatch contract
 
 ```text
 Work item: OFF-XXX
-Goal: <one sentence copied from WORK_ITEMS.md>
+Goal: <exact work-item goal>
 Read first:
-- <frozen ADRs>
-- <dependency outputs>
+- frozen architecture
+- direct prerequisite outputs
+- active work-item acceptance
 Allowed ownership:
-- <exact directories/files>
+- exact bounded-context/package paths
 Consumes:
-- <exact interfaces>
+- exact predecessor interfaces
 Produces:
-- <exact interfaces/files>
-Acceptance:
-- <deterministic tests>
+- exact interfaces/files
+Required tests:
+- deterministic tests named by the work item
 Forbidden:
-- provider-specific concepts in core
-- direct DB writes from agents/apps
+- provider leakage into core
+- direct AI/app SQL writes
+- unscoped queries
+- second canonical source of truth
 - unrelated refactors
-- changing frozen ADRs
-Stop and report if:
-- contract is insufficient
-- dependency is missing
-- another ownership boundary must be changed
+- changes to frozen ADRs
+Stop and report when:
+- a frozen contract is insufficient
+- another ownership boundary must change
+- the item needs to expand
 ```
+
+## Three-worker scheduling rule
+
+The maximum concurrency is three. This is a cap, not a target. Never create artificial work merely to fill three slots.
+
+Prefer independent ownership boundaries. Example high-value parallelization after prerequisites are complete:
+
+- `OFF-004` + `OFF-006`
+- `OFF-008` + `OFF-009` + `OFF-010`
+- `OFF-021` + `OFF-022` + `OFF-023`
+
+Do not combine multiple OFF IDs into one worker assignment.
 
 ## Architecture-change protocol
 
-The worker must stop if the implementation appears to require changing a frozen decision. The Tech Lead writes a proposed ADR revision describing context, alternatives, decision, consequences, migration, and affected work items. No implementation continues against a changed contract until the revision is explicitly accepted and committed.
+If implementation appears to require changing a frozen decision:
 
-## Review protocol
+1. Stop the affected worker.
+2. Record the concrete mismatch and affected work items.
+3. Draft an ADR revision containing context, alternatives, decision, consequences, migration and work-item impact.
+4. Do not implement against the revised design until the ADR revision is explicitly accepted and committed.
 
-Every merged item is checked for:
+## Mandatory review gates
 
-- tenant/project authorization
-- canonical source-of-truth compliance
-- event/outbox behavior where mutations occur
-- idempotency
-- provider leakage
-- app permission isolation
-- agent action gateway compliance
-- deterministic tests for new invariants
-- migration safety
-- no hidden coupling to unapproved work items
+Every merged work item must be checked for:
 
-## Branch/commit discipline
+- tenant/project authorization;
+- canonical source-of-truth compliance;
+- event/outbox correctness for canonical mutations;
+- idempotency/replay behavior;
+- provider leakage;
+- app permission isolation where applicable;
+- Action Gateway enforcement for agent/app writes;
+- deterministic tests for new invariants;
+- migration safety;
+- hidden coupling to unfinished work;
+- no unexplained direct database access from UI, adapters, apps or agents.
 
-Preferred implementation workflow is one branch/PR per work item. Commits stay focused. Do not squash unrelated work items together merely to reduce PR count.
+## Definition of done
 
-## Readiness signals
+`docs/execution/DEFINITION_OF_DONE.md` is mandatory. Code presence, compilation, screenshots, or worker claims are not completion evidence by themselves.
 
-A work item is `READY` only when every dependency is merged and its declared interfaces exist. It is `IN_PROGRESS` only when a worker is actively implementing it. It is `BLOCKED` when a dependency or architectural question is unresolved. It is `DONE` only when its acceptance gate and required review pass.
+## Git discipline
 
-## Completion rule
+- One work item = one implementation branch/PR.
+- Keep commits focused and reviewable.
+- Never merge out of dependency order merely because a PR is ready.
+- Avoid force-pushing shared worker branches.
+- Do not rewrite frozen architecture in feature commits.
 
-A feature is not considered implemented because code exists. It is complete only when the Definition of Done passes and the work item's contract is consumed without architecture drift.
+## Current authoritative status
+
+- Production implementation: not started.
+- Architecture: frozen.
+- Atomic backlog: OFF-001 through OFF-040.
+- Initial READY item: `OFF-001` only.
+- Phase trackers: GitHub issues #1 through #8.
+- Dependency authority: `docs/execution/DEPENDENCY_GRAPH.md`.
+- Completion authority: `docs/execution/DEFINITION_OF_DONE.md`.
 
 ## Successor independence test
 
-A fresh Tech Lead with no conversation context must be able to answer from this repo alone:
+A fresh Tech Lead with no conversation context must be able to determine from this repository alone:
 
-- What is the mission?
-- What is canonical truth?
-- What are the bounded contexts?
-- Which systems are adapters?
-- How do apps extend the platform?
-- How does a desktop client share the same project?
-- What may agents do?
-- Which three items are ready next?
-- What constitutes completion?
+- the product mission;
+- canonical truth and bounded contexts;
+- coexistence strategy for specialist systems;
+- marketplace model;
+- same-project/many-view contract;
+- AI execution boundary;
+- offline conflict policy;
+- current READY queue;
+- worker ownership rules;
+- completion evidence;
+- how to propose an architecture change.
 
-If any answer requires hidden conversation history, the handoff is incomplete and the Tech Lead must repair the repository artifacts before feature work proceeds.
+If any answer requires hidden conversation context, repair the repository artifacts before feature implementation continues.

@@ -1,0 +1,18 @@
+{
+  "name": "@office/authz",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Office authorization and policy kernel (OFF-006): deny-by-default tenant/project/resource policy evaluator, declared capability vocabulary with fail-closed parsing, role-to-capability primitives, and the service-to-service AuthorizationContext. Depends only on @office/contracts and @office/domain-kernel.",
+  "sideEffects": false,
+  "main": "./src/index.ts",
+  "types": "./src/index.ts",
+  "exports": {
+    ".": "./src/index.ts",
+    "./package.json": "./package.json"
+  },
+  "dependencies": {
+    "@office/contracts": "workspace:^",
+    "@office/domain-kernel": "workspace:^"
+  }
+}

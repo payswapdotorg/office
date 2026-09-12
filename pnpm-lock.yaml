@@ -213,6 +213,36 @@ importers:
         specifier: workspace:^
         version: link:../contracts
 
+  packages/domain/organization:
+    dependencies:
+      '@office/authz':
+        specifier: workspace:^
+        version: link:../../authz
+      '@office/contracts':
+        specifier: workspace:^
+        version: link:../../contracts
+      '@office/domain-kernel':
+        specifier: workspace:^
+        version: link:../../domain-kernel
+      '@office/persistence':
+        specifier: workspace:^
+        version: link:../../persistence
+
+  packages/domain/projects:
+    dependencies:
+      '@office/authz':
+        specifier: workspace:^
+        version: link:../../authz
+      '@office/contracts':
+        specifier: workspace:^
+        version: link:../../contracts
+      '@office/domain-kernel':
+        specifier: workspace:^
+        version: link:../../domain-kernel
+      '@office/persistence':
+        specifier: workspace:^
+        version: link:../../persistence
+
   packages/events:
     dependencies:
       '@office/contracts':

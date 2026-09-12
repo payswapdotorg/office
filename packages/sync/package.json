@@ -1,0 +1,20 @@
+{
+  "name": "@office/sync",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Office realtime subscription protocol (OFF-028): versioned typed subscription contracts over project-slice event streams, explicit/versioned/revocable A9 subscription grants re-checked at every stream read, exactly-once cursor resume, deterministic client operation ids, and explicit (never auto-resolved) conflict records for the client synchronization API. In-memory test broker only — NO transport, NO websocket/socket.io, NO network I/O; depends only on @office/contracts, @office/domain-kernel, @office/authz, and @office/events.",
+  "sideEffects": false,
+  "main": "./src/index.ts",
+  "types": "./src/index.ts",
+  "exports": {
+    ".": "./src/index.ts",
+    "./package.json": "./package.json"
+  },
+  "dependencies": {
+    "@office/authz": "workspace:^",
+    "@office/contracts": "workspace:^",
+    "@office/domain-kernel": "workspace:^",
+    "@office/events": "workspace:^"
+  }
+}

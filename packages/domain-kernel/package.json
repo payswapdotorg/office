@@ -1,0 +1,17 @@
+{
+  "name": "@office/domain-kernel",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Office domain kernel (OFF-003): transaction-independent domain primitives — aggregate identity & versioning with optimistic concurrency tokens, the DomainError taxonomy, declarative invariant checking, idempotency key-registry primitives, and the transactional CommandHandler interface. Depends only on @office/contracts.",
+  "sideEffects": false,
+  "main": "./src/index.ts",
+  "types": "./src/index.ts",
+  "exports": {
+    ".": "./src/index.ts",
+    "./package.json": "./package.json"
+  },
+  "dependencies": {
+    "@office/contracts": "workspace:^"
+  }
+}

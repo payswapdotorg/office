@@ -189,6 +189,12 @@ importers:
 
   packages/contracts: {}
 
+  packages/domain-kernel:
+    dependencies:
+      '@office/contracts':
+        specifier: workspace:^
+        version: link:../contracts
+
   packages/test-fixtures: {}
 
 packages:

@@ -1,14 +1,24 @@
 # Office Implementation Status
 
-Status: architecture prepared; production implementation not started.
+Status: production implementation STARTED — Phase 0 in progress.
+
+## Completed work items
+
+### OFF-001 Repository/toolchain bootstrap — DONE (2026-09-12)
+
+- Merge: PR #9 squash-merged as `65a79e2` on `main`.
+- Acceptance evidence: clean `pnpm install`; `pnpm lint` exit 0; `pnpm typecheck` exit 0; `pnpm test` 7/7 passed; `pnpm test:architecture` 5/5 passed; working tree clean (exactly the 19 declared files).
+- CI evidence: GitHub Actions runs `34682400695` (push) and `34683445975` (pull_request) both completed `success` on `535f1cf` (Node 22 + pnpm 12.4.1, frozen lockfile, same four gates).
+- Review gates: frozen `docs/` untouched; no runtime/provider dependencies (toolchain only); no secrets in tracked files; `apps/web` placeholder enforced by `tests/architecture/workspace.test.ts`.
+- Worker session `off-001c` (chat.z.ai agents tab, GLM-5.3/Full-Stack); verification reproduced independently by the Tech Lead per the `AGENTS.md` evidence rule.
 
 ## Current ready queue
 
-- `OFF-001` is the only valid first implementation item because the repository/toolchain must exist before downstream contract work can be verified.
+- `OFF-002` Canonical contract package (`packages/contracts`) — the only READY item; its declared dependency OFF-001 is DONE and verified.
 
-## Immediately after OFF-001
+## After OFF-002
 
-The Tech Lead may start the next contract lane and parallel non-conflicting governance/test work. Once OFF-002/OFF-003/OFF-004/OFF-006 are satisfied, the first substantial 3-worker domain wave is:
+- `OFF-003` Domain kernel becomes the only READY item. After OFF-003, `OFF-004` and `OFF-006` may run concurrently; `OFF-005` waits for OFF-004. Once OFF-002/OFF-003/OFF-004/OFF-006 are satisfied, the first substantial 3-worker domain wave is:
 
 - `OFF-008` Documents & Evidence
 - `OFF-009` Work & Field

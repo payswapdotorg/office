@@ -1,8 +1,18 @@
 # Office Implementation Status
 
-Status: production implementation STARTED — 38/40 items done (through OFF-038; PR #47). Remaining 2 — the serial tail: OFF-039 (deps 038✅ + all predecessor contracts — READY, dispatching now) → OFF-040. Station verify (fresh-checkout gates on the pushed branch + post-merge main) remains the merge authority. Post-merge main: 277 files / 3584 tests, all five gates rc=0.
+Status: production implementation STARTED — 39/40 items done (through OFF-039; PR #48). Remaining 1: OFF-040 successor handoff verification (deps 039✅ — READY, dispatching now). Station verify (fresh-checkout gates on the pushed branch + post-merge main) remains the merge authority. Post-merge main: 283 files / 3640 tests + 61 architecture-conformance tests, all five gates rc=0; main branch protection requires the CI gate.
 
 ## Completed work items
+
+### OFF-039 Architecture conformance gate — DONE (2026-09-13)
+
+- Merge: squash-merged via PR #48 as `94a59c5` on `main`.
+- Worker: local subagent (2 attempts; attempt 1 died to an infrastructure context deadline leaving the conformance core uncommitted — rules.ts 934 lines + the five real-tree check tests; attempt 2 fixed TWO inherited anchor defects against the actual tree — `@office-sample/app` manifest name, intelligence family-dir prefixes — wrote the 38-probe mutation suite + the rulebook README + the explicit CI gate step, deleted the root scratch probes).
+- Acceptance evidence (station-verified on the pushed branch 729b87a by the Tech Lead): install 0 (lockfile diff EMPTY — zero new dependencies); lint 0; typecheck 0; `pnpm test` **3640/3640** (283 files — the landed corpus exactly additive: 277 + 6 new architecture files, 3584 + 56 tests; zero package/app edits); `pnpm test:architecture` **61/61** (7 files, 1.64s); post-merge main re-verified identical.
+- Acceptance gates proven: THE five named checks as deterministic fail-closed static scans — (1) forbidden imports: the global cross-package boundary table derived from each package's OWN package.json + the frozen layering rules (domain→adapter ban, client→persistence ban, adapter→adapter ban); (2) provider leakage: the repo-wide real-vendor vocabulary scan with the name list in ONE shared constant and the sanctioned exceptions explicitly enumerated; (3) direct agent DB access: the agents/intelligence family persistence/SQL ban scanned structurally over every current + future family member (glob-discovered); (4) unscoped queries: the static A12 discipline on the exported persistence-facing query surface (both landed scope-carrier forms + the enumerated platform control-plane exceptions); (5) app permission drift: the three clients' declared capability baselines vs the closed capability registry in packages/authz. **The mutation probes: 38 tests proving every rule FAILS CLOSED on synthetic violating inputs (in-memory fixture maps — never real repo files) naming rule + file, with healthy controls and fail-closed declared-file probes — a rule that cannot be shown to fail is not a gate.** The rulebook README (freeze citations, static encodings, exceptions, violation rendering, determinism + fail-closed discipline, extension guide). The CI gate: the step renamed to "Architecture conformance gate (OFF-039)" — never `continue-on-error`, never conditional.
+- **"Required CI gate" wired at both levels**: the ci.yml step (repo files — enforceable) AND main branch protection now REQUIRES the toolchain check (strict, no force-push, no deletion) — set by the Tech Lead via the API post-merge.
+- Produced the conformance suite at tests/architecture/** (2,275 lines incl. the OFF-001 placeholder, which keeps passing untouched). For OFF-040 (the handoff verification's conformance evidence) consumption.
+- Review gates: ownership exact (tests/architecture/** + the 6-line ci.yml gate-step change); frozen docs untouched; zero package/app changes; no new dependencies; deterministic + fast (1.64s).
 
 ### OFF-038 Production readiness and operational runbook — DONE (2026-09-13)
 
@@ -344,8 +354,8 @@ Status: production implementation STARTED — 38/40 items done (through OFF-038;
 
 ## Current ready queue
 
-- `OFF-039` Architecture conformance gate (deps 038✅ + all predecessor contracts — READY) — IN FLIGHT (worker dispatched; brief at office-ops/prompts/off-039.md).
-- Then: OFF-040 successor handoff verification (deps 039).
+- `OFF-040` Successor handoff verification (deps 039✅ — READY) — IN FLIGHT (worker dispatched; brief at office-ops/prompts/off-040.md).
+- The queue is otherwise EMPTY: every other item is DONE and verified.
 
 ## Phase tracker issues
 

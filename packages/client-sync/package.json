@@ -1,0 +1,21 @@
+{
+  "name": "@office/client-sync",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Office offline sync engine (OFF-029): the client-side offline sync protocol — disconnected mutations captured into a bounded LocalQueue with CLIENT-GENERATED deterministic operation ids (client id + local sequence + command fingerprint) and client-observed timestamps, causal/version tokens (the client's last-seen slice cursor) checked against the server's actual state for clean-apply vs conflict, exactly-once replay on reconnection (idempotency by operation id; interrupted drains resume without duplicates), and explicit conflict resolution — PROTECTED conflicts (material commercial state) are never auto-resolved; resolution is a typed explicit command that re-enters the queue discipline. Composes @office/sync's grants, project slices, operation registry, and conflict records. In-memory engine only — NO transport, NO network I/O, NO SQL; depends only on @office/sync, @office/contracts, @office/domain-kernel, @office/authz, and @office/events (the ledger shapes).",
+  "sideEffects": false,
+  "main": "./src/index.ts",
+  "types": "./src/index.ts",
+  "exports": {
+    ".": "./src/index.ts",
+    "./package.json": "./package.json"
+  },
+  "dependencies": {
+    "@office/authz": "workspace:^",
+    "@office/contracts": "workspace:^",
+    "@office/domain-kernel": "workspace:^",
+    "@office/events": "workspace:^",
+    "@office/sync": "workspace:^"
+  }
+}

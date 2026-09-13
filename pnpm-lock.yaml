@@ -238,6 +238,24 @@ importers:
         specifier: workspace:^
         version: link:../domain-kernel
 
+  packages/client-sync:
+    dependencies:
+      '@office/authz':
+        specifier: workspace:^
+        version: link:../authz
+      '@office/contracts':
+        specifier: workspace:^
+        version: link:../contracts
+      '@office/domain-kernel':
+        specifier: workspace:^
+        version: link:../domain-kernel
+      '@office/events':
+        specifier: workspace:^
+        version: link:../events
+      '@office/sync':
+        specifier: workspace:^
+        version: link:../sync
+
   packages/contracts: {}
 
   packages/domain-kernel:

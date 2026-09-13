@@ -1,8 +1,17 @@
 # Office Implementation Status
 
-Status: production implementation STARTED — 39/40 items done (through OFF-039; PR #48). Remaining 1: OFF-040 successor handoff verification (deps 039✅ — READY, dispatching now). Station verify (fresh-checkout gates on the pushed branch + post-merge main) remains the merge authority. Post-merge main: 283 files / 3640 tests + 61 architecture-conformance tests, all five gates rc=0; main branch protection requires the CI gate.
+Status: production implementation COMPLETE — 40/40 items done (through OFF-040; PR #49). The ready queue is EMPTY: the frozen backlog is complete. Station verify (fresh-checkout gates on the pushed branch + post-merge main) remains the merge authority; the machine-verified successor independence test at tests/handoff re-verifies the terminal state on every run. Post-merge main: 285 files / 3688 tests + 61 architecture-conformance tests, all five gates rc=0; main branch protection requires the CI gate.
 
 ## Completed work items
+
+### OFF-040 Successor handoff verification — DONE (2026-09-13)
+
+- Merge: squash-merged via PR #49 as `ef786e3` on `main` — the FINAL item: the frozen 40-item backlog is complete.
+- Worker: local subagent (3 attempts + direct Tech-Lead completion; attempts 1-2 died to infrastructure context deadlines — attempt 2 delivered the parsers, the ready-state algorithm, the replay, and all six checker families + the 20-test real-artifact suite; attempt 3 wrote the successor-map README + the terminal handoff-doc sections before being stopped; the Tech Lead finished the 28 mutation probes directly, fixing three probe-convention defects along the way — the omitted fs-oracle arguments, the newest-first entry-order convention of the replay, and the dependency-free-item ready expectation).
+- Acceptance evidence (station-verified via a TRUE fresh clone of the pushed branch b5876b1 from origin): install 0 (lockfile untouched — zero new dependencies); lint 0; typecheck 0; `pnpm test` **3688/3688** (285 files — exactly additive: 283 + 2 new handoff files, 3640 + 48 tests [20 real-artifact verifications + 28 mutation probes]); `pnpm test:architecture` **61/61** (unchanged); post-merge main re-verified identical.
+- Acceptance gates proven: THE machine-verified successor independence test — (1) the verified dependency graph: WORK_ITEMS' `Depends on` fields and DEPENDENCY_GRAPH's DAG summary encode the SAME acyclic graph (every summary edge a declared dependency, same direction; every one of the 40 items exactly once); (2) the computable ready queue: the algorithm WORK_ITEMS itself defines, applied to the DONE set parsed from the tracker — the recorded queue agrees with the computed queue, and the queue is EMPTY exactly when the backlog is complete; (3) the completion replay: reverse document order = the completion order; ZERO dependency-order violations across every recorded merge; the execution never stalled; the ready frontier offered ≥ 3 simultaneous choices (the three-worker waves were simultaneously ready — the "a fresh engineer can choose three ready work items" acceptance demonstrated on the replayed history); (4) unambiguous ownership: one Owner boundary per item, all 40 pairwise distinct, every workspace manifest claimed exactly once besides the documented shared exception; (5) reproducible setup instructions: the bootstrap + the four gate commands wired identically across the successor map, package.json, and CI (the required OFF-039 conformance step by its exact name; never `continue-on-error`); (6) the independence-test answers: exactly the eleven frozen questions parsed from the handoff document, every one answered by an existing, non-vacuous artifact anchor. **The 28 mutation probes prove every rule FAILS CLOSED** (in-memory mutated worlds + stubbed oracles, never written files — naming the family, the file, and the exact expectation; healthy controls per family; the fail-closed loader names the exact missing path).
+- Produced the handoff suite at tests/handoff/** (4 files, ~2,600 lines) + the TECH_LEAD_HANDOFF.md terminal state (three status sections only, byte-confined: the Status line, the reality check, the current authoritative status).
+- Review gates: ownership exact (tests/handoff/** + the 6-line handoff-doc diff); frozen ADRs + the four other execution artifacts untouched; zero package/app changes; no new dependencies; deterministic (no clock, no randomness, sorted walks) + fast.
 
 ### OFF-039 Architecture conformance gate — DONE (2026-09-13)
 
@@ -354,8 +363,8 @@ Status: production implementation STARTED — 39/40 items done (through OFF-039;
 
 ## Current ready queue
 
-- `OFF-040` Successor handoff verification (deps 039✅ — READY) — IN FLIGHT (worker dispatched; brief at office-ops/prompts/off-040.md).
-- The queue is otherwise EMPTY: every other item is DONE and verified.
+- No work item is READY: the ready queue is EMPTY — every work item is DONE and verified (the terminal state; recomputed and asserted by the machine-verified handoff suite on every run).
+- Extension entry point: propose NEW work items under the same governance (`AGENTS.md`, `docs/execution/DEFINITION_OF_DONE.md`, the required conformance gate) — never by editing the frozen history of landed items.
 
 ## Phase tracker issues
 

@@ -235,6 +235,18 @@ importers:
         specifier: workspace:^
         version: link:../domain-kernel
 
+  packages/adapter-finance:
+    dependencies:
+      '@office/adapters-sdk':
+        specifier: workspace:^
+        version: link:../adapters-sdk
+      '@office/contracts':
+        specifier: workspace:^
+        version: link:../contracts
+      '@office/domain-kernel':
+        specifier: workspace:^
+        version: link:../domain-kernel
+
   packages/adapter-model:
     dependencies:
       '@office/adapters-sdk':

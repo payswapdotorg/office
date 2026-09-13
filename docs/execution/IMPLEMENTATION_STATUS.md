@@ -1,8 +1,35 @@
 # Office Implementation Status
 
-Status: production implementation STARTED — 14/40 items done (OFF-001..OFF-013 + OFF-020). Next wave READY: OFF-014 (margin engine) + OFF-016 (workflow engine) + OFF-028 (realtime subscription) — dispatched in parallel (highest downstream fan-in); provider adapters OFF-021/022/023 queued behind them.
+Status: production implementation STARTED — 17/40 items done (OFF-001..OFF-014 + OFF-016 + OFF-020 + OFF-028). Next wave READY: OFF-015 (enterprise memory) + OFF-017 (action gateway) + OFF-029 (offline sync) — dispatched in parallel; together they unblock OFF-018 next.
 
 ## Completed work items
+
+### OFF-028 Realtime subscription protocol — DONE (2026-09-13)
+
+- Merge: PR #26 squash-merged as `a969137` on `main`.
+- Worker: local subagent (2 attempts; attempt 2 fixed 22 inherited test-layer typecheck errors + 3 lint + one real source defect (conflict.ts resolution-idempotency compared parsed Actor objects by reference) + two buggy test expectations, then closed the critical coverage gap by writing the broker acceptance suite).
+- Acceptance evidence (station-verified fresh checkout): install --frozen-lockfile 0; lint 0; typecheck 0; `pnpm test` **1448/1448** (86 new in @office/sync incl. 11 broker acceptance tests); architecture 5/5.
+- Acceptance gates proven: THE two-client convergence gate (both clients receive the same event at the same sequence; independent catchup + resubscribe → identical state); exactly-once per subscription (cursor resume: no duplicates, no gaps); A9 grant revocation (typed clean stop, no partial/corrupt events, authorization proven BEFORE any slice read via a read-counting source); A12 both directions; explicit ConflictRecords with both sides + deterministic ordering, no destructive auto-resolution; run-twice determinism.
+- Produced `@office/sync`: versioned subscription contracts, A9 SubscriptionGrants, ProjectSlice streams, typed protocol messages, deterministic operation IDs, the in-memory SubscriptionBroker. NO transport I/O (protocol only — the app layer wires transports). Documented ledger read-surface gap for OFF-029: @office/events exposes only per-aggregate reads; a project-scoped ordered read is needed when the real ledger is wired.
+- Review gates: ownership exact; no network I/O; no domain/intelligence/adapters/workflows imports; no provider vocabulary; secrets scan clean.
+
+### OFF-016 Workflow/approval engine — DONE (2026-09-13)
+
+- Merge: PR #25 squash-merged as `0ae4203` on `main`.
+- Worker: local subagent (3 attempts; attempt 3 fixed all 39 inherited test-layer typecheck errors + 4 lint + 8 first-run runtime failures against the real source signatures — zero source defects surfaced — and wrote the README).
+- Acceptance evidence (station-verified fresh checkout): install --frozen-lockfile 0; lint 0; typecheck 0; `pnpm test` **1552/1552** (190 new in @office/workflows); architecture 5/5.
+- Acceptance gates proven: deterministic state transitions (same definition + state + command → same resulting state + same events; undefined states unreachable); approval-required actions CANNOT bypass policy (typed denial without capability; policy denial blocks transition; audit event records denial; no path advances approval without authorization incl. idempotency/retry paths); bounded retries (typed terminal exhaustion, idempotent attempts); SLA escalation (fires exactly at the injected clock, reassigns per definition, auditable); definition immutability + instance version pinning; A12 both directions; optimistic concurrency.
+- Produced `@office/workflows`: versioned immutable WorkflowDefinitions, WorkflowInstance state machine, capability-gated approvals, retries/escalation, EventSink port + ledger adapter. For OFF-017 Action Gateway + OFF-025/026/030/031/036 consumption.
+- Review gates: ownership exact; no domain/intelligence/adapters imports; no wall-clock/randomness in logic; no provider vocabulary; secrets scan clean.
+
+### OFF-014 Margin and impact engine — DONE (2026-09-13)
+
+- Merge: PR #24 squash-merged as `4aa56d2` on `main`.
+- Worker: local subagent (2 attempts; attempt 2 wrote the 56-test acceptance suite + README, fixed 4 stale golden constants inherited from attempt 1 (fixtures had never been executed) + lint/typecheck defects).
+- Acceptance evidence (station-verified fresh checkout): install --frozen-lockfile 0; lint 0; typecheck 0; `pnpm test` **1418/1418** (56 new in @office/intelligence-margin); architecture 5/5.
+- Acceptance gates proven: golden construction scenarios (cost/schedule/entitlement/margin) with exact SOURCE EVENT IDS per number — mutating/removing a source event changes the assessment (traceability real); determinism (run-twice + shuffled chain-preserving inputs + fold rebuild); A4 provenance (evidence refs, source identity, injected timestamps, confidence, policy context); authorization BEFORE calculation; A12 no-existence-oracle.
+- Produced `@office/intelligence-margin`: ImpactAssessment, deterministic calculateImpact, golden scenarios, assessment events through the EventSink port. For OFF-015/018/019/033/034 consumption.
+- Review gates: ownership exact (packages/intelligence/margin/** + lockfile); @office/intelligence-relationships the sole intelligence peer; NO domain-package imports; no provider vocabulary; secrets scan clean.
 
 ### OFF-020 Adapter SDK — DONE (2026-09-12)
 

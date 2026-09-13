@@ -4,6 +4,11 @@
 # lint, typecheck, test, test:architecture — on pnpm (version pinned by the
 # `packageManager` field in package.json) and Node.js 22.
 #
+# OFF-039: the architecture conformance suite runs as its own distinctly
+# named, REQUIRED gate step ("Architecture conformance gate (OFF-039)") —
+# never `continue-on-error`, never conditional — so a frozen-architecture
+# violation fails the build exactly like a failing test or a type error.
+#
 # OFF-004: the test gates run against a real PostgreSQL 17 service container.
 # DATABASE_URL points the persistence integration harness (CI mode) at it;
 # the harness never touches the referenced database directly — it creates an
@@ -60,7 +65,7 @@ jobs:
         env:
           DATABASE_URL: postgres://office:office@localhost:5432/office_test
 
-      - name: Architecture tests
+      - name: Architecture conformance gate (OFF-039)
         run: pnpm test:architecture
         env:
           DATABASE_URL: postgres://office:office@localhost:5432/office_test

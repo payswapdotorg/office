@@ -223,6 +223,18 @@ importers:
         specifier: workspace:^
         version: link:../workflows
 
+  packages/adapter-construction:
+    dependencies:
+      '@office/adapters-sdk':
+        specifier: workspace:^
+        version: link:../adapters-sdk
+      '@office/contracts':
+        specifier: workspace:^
+        version: link:../contracts
+      '@office/domain-kernel':
+        specifier: workspace:^
+        version: link:../domain-kernel
+
   packages/adapters-sdk:
     dependencies:
       '@office/authz':

@@ -1,0 +1,19 @@
+{
+  "name": "@office/adapter-construction",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Office reference construction/CDE provider adapter (OFF-021): a complete Adapter implementation over the @office/adapters-sdk contract — document/RFI/change-event/observation object mappings into the landed canonical command vocabulary, source identity mapping (provider ids never primary keys), replay-safe multi-stream sync, and CDE webhook ingest with explicit conflict records on divergence. Generic provider vocabulary only (adapter kind 'construction-cde'); all provider-specific shapes live inside this package. Ports only: no I/O, no SQL, no clock, no randomness; depends only on @office/adapters-sdk, @office/contracts, and @office/domain-kernel.",
+  "sideEffects": false,
+  "main": "./src/index.ts",
+  "types": "./src/index.ts",
+  "exports": {
+    ".": "./src/index.ts",
+    "./package.json": "./package.json"
+  },
+  "dependencies": {
+    "@office/adapters-sdk": "workspace:^",
+    "@office/contracts": "workspace:^",
+    "@office/domain-kernel": "workspace:^"
+  }
+}

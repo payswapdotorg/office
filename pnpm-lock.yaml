@@ -811,6 +811,33 @@ importers:
         specifier: workspace:^
         version: link:../domain-kernel
 
+  packages/operations:
+    dependencies:
+      '@office/adapter-construction':
+        specifier: workspace:^
+        version: link:../adapter-construction
+      '@office/adapter-finance':
+        specifier: workspace:^
+        version: link:../adapter-finance
+      '@office/adapter-model':
+        specifier: workspace:^
+        version: link:../adapter-model
+      '@office/adapter-schedule':
+        specifier: workspace:^
+        version: link:../adapter-schedule
+      '@office/contracts':
+        specifier: workspace:^
+        version: link:../contracts
+      '@office/domain-kernel':
+        specifier: workspace:^
+        version: link:../domain-kernel
+      '@office/persistence':
+        specifier: workspace:^
+        version: link:../persistence
+      '@office/security':
+        specifier: workspace:^
+        version: link:../security
+
   packages/persistence:
     dependencies:
       '@office/contracts':

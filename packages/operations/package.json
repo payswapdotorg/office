@@ -1,0 +1,24 @@
+{
+  "name": "@office/operations",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Office production readiness and operational runbook (OFF-038): THE deterministic backup/destroy/restore drill over the persistence integration harness, the migrations-policy verification, the typed deployment-topology artifact, and the failure-mode catalog with tested automated detection rules and documented operator actions. Depends only on landed Office workspace packages; pg flows through @office/persistence's harness (never a direct dependency here).",
+  "sideEffects": false,
+  "main": "./src/index.ts",
+  "types": "./src/index.ts",
+  "exports": {
+    ".": "./src/index.ts",
+    "./package.json": "./package.json"
+  },
+  "dependencies": {
+    "@office/adapter-construction": "workspace:^",
+    "@office/adapter-finance": "workspace:^",
+    "@office/adapter-model": "workspace:^",
+    "@office/adapter-schedule": "workspace:^",
+    "@office/contracts": "workspace:^",
+    "@office/domain-kernel": "workspace:^",
+    "@office/persistence": "workspace:^",
+    "@office/security": "workspace:^"
+  }
+}

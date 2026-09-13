@@ -1,8 +1,26 @@
 # Office Implementation Status
 
-Status: production implementation STARTED — 34/40 items done (through OFF-031 and OFF-035). Remaining 6: OFF-034 (in flight — continuation after an infrastructure timeout) + OFF-032 (in flight — continuation after an infrastructure timeout), then OFF-037 (unlocks when 034 lands), then the serial tail OFF-038 → OFF-039 → OFF-040. NOTE: GitHub API/Actions intermittently degraded during the 030/033 landings — station verify (fresh-checkout gates) remains the merge authority; CI re-verifies on main when the platform recovers.
+Status: production implementation STARTED — 36/40 items done (through OFF-034 and OFF-032; PRs #44/#45). Remaining 4 — the serial tail: OFF-037 (ALL dependencies ✅ — dispatching now) → OFF-038 (036✅+037) → OFF-039 → OFF-040. Station verify (fresh-checkout gates on the pushed branch + post-merge main) remains the merge authority. Post-merge main: 267 files / 3506 tests, all five gates rc=0.
 
 ## Completed work items
+
+### OFF-034 Procurement optimization engine — DONE (2026-09-13)
+
+- Merge: squash-merged via PR #44 as `21ff189` on `main`.
+- Worker: local subagent (2 attempts; attempt 1 lost to an infrastructure timeout after writing ~8K lines; attempt 2 ran the gates — ZERO real source defects, the only fix was one test-side unused-import lint error — wrote the missing boundary self-gate (17 tests) + README, committed d909130, pushed).
+- Acceptance evidence (station-verified on the pushed branch by the Tech Lead): install 0; lint 0; typecheck 0; `pnpm test` **3480/3480** (264 files; procurement: 7 files, 122 tests incl. golden 28 + boundary 17); architecture 5/5.
+- Acceptance gates proven: THE golden sourcing portfolio — vendor switch / order splitting / lead-time-driven timing shift — each produces exactly one typed ProcurementRecommendation whose historical basis resolves to referenced OutcomeRecord/benchmark facts and whose projected economic impact resolves to referenced ImpactAssessment values recomputed BY HAND; evidence chains resolve end to end; stable ranking across runs and shuffles; suggestion-only (commitment without an explicit policy decision is a typed rejection; with one the exit is still a ProposedNextAction record — the exact mirror of revenue's assertRecoveryClaim, pinned by the boundary self-gate); A12 both directions with the no-existence-oracle not-found; A3 audit envelopes.
+- Produced `@office/intelligence-procurement`. For OFF-037 integration + OFF-040 analytics consumption. **Completes every intelligence dependency of OFF-037.**
+- Review gates: ownership exact (packages/intelligence/procurement/** + lockfile); seven-dep boundary; no network/LLM/SQL; frozen docs untouched.
+
+### OFF-032 Desktop client protocol/reference shell — DONE (2026-09-13)
+
+- Merge: squash-merged via PR #45 as `c60b841` on `main` (GitHub auto-resolved the additive lockfile importer blocks).
+- Worker: local subagent (2 attempts; attempt 1 left ~3.9K lines uncommitted; attempt 2 completed ALL deliverables — index.ts, golden-scenario/a12-scope/boundary suites, README — committed 5fd3c58 and pushed, then died to a context deadline BEFORE reporting; state recorded by the Tech Lead via direct inspection per the AGENTS.md evidence rule, the OFF-036 precedent).
+- Acceptance evidence (station-verified on the pushed branch by the Tech Lead): install 0; lint 0; typecheck 0; `pnpm test` **3384/3384** (260 files; apps/desktop: 3 suites — golden 6 + a12 + boundary 25); architecture 5/5.
+- Acceptance gates proven: THE same-protocol proof — the reference desktop host over the SAME seeded project: reads (workspace view models over the subscribed slice), writes (typed command path → canonical world reflects them), offline capture → reconnect → exactly-once drain, conflict state displayed with the typed explicit resolution as the only protected exit; PLUS the cross-client convergence proof (a web-style client AND the desktop host over ONE shared server world converge on the identical reconciled state); run-twice identical view models; A12 typed-rejected both directions; the structural no-platform-specific-domain-model boundary (eleven-dep import discipline; no persistence even type-only; no Electron/node runtime/DOM vocabulary).
+- Produced `@office/desktop-shell`. For OFF-037 integration consumption (the third client composition).
+- Review gates: ownership exact (apps/desktop/** + lockfile); frozen docs untouched; no root config changes.
 
 ### OFF-031 Field/offline web client — DONE (2026-09-13)
 
@@ -308,9 +326,8 @@ Status: production implementation STARTED — 34/40 items done (through OFF-031 
 
 ## Current ready queue
 
-- `OFF-034` Procurement optimization intelligence (`packages/intelligence/procurement`; depends 011✅ + 014✅ + 015✅ + 018✅) — IN FLIGHT (continuation worker dispatched; ~8K lines inherited uncommitted, missing boundary.test.ts + README.md, gates never run).
-- `OFF-032` Desktop client protocol/reference shell (`apps/desktop`; depends 002✅ + 025✅ + 028✅ + 029✅) — IN FLIGHT (continuation worker dispatched; ~3.8K lines inherited uncommitted, missing index.ts + all tests + README.md, gates never run).
-- NEXT: OFF-037 integration scenario (unblocks when 034 lands — 021/022/023/024/030/033 all ✅). Then the serial tail: OFF-038 (036✅+037) → OFF-039 → OFF-040.
+- `OFF-037` End-to-end construction reference scenario (`packages/reference-scenario`; depends 021✅ + 022✅ + 023✅ + 024✅ + 030✅ + 033✅ + 034✅ — ALL LANDED) — IN FLIGHT (worker dispatched; brief at office-ops/prompts/off-037.md).
+- Then the serial tail: OFF-038 production readiness (036✅ + 037) → OFF-039 architecture conformance gate → OFF-040 successor handoff verification.
 
 ## Phase tracker issues
 

@@ -375,6 +375,27 @@ importers:
         specifier: workspace:^
         version: link:../relationships
 
+  packages/intelligence/memory:
+    dependencies:
+      '@office/authz':
+        specifier: workspace:^
+        version: link:../../authz
+      '@office/contracts':
+        specifier: workspace:^
+        version: link:../../contracts
+      '@office/domain-kernel':
+        specifier: workspace:^
+        version: link:../../domain-kernel
+      '@office/events':
+        specifier: workspace:^
+        version: link:../../events
+      '@office/intelligence-margin':
+        specifier: workspace:^
+        version: link:../margin
+      '@office/intelligence-relationships':
+        specifier: workspace:^
+        version: link:../relationships
+
   packages/intelligence/relationships:
     dependencies:
       '@office/authz':

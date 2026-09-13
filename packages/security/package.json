@@ -1,0 +1,22 @@
+{
+  "name": "@office/security",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Office security and audit hardening (OFF-036): the cross-cutting conformance suite that proves tenant isolation (A12, both directions, across the REAL action gateway and the REAL app runtime), authorization boundaries (deny-by-default with no actor-kind bypass), audit completeness (every consequential mutation produces its audit envelope — gateway decisions, app dispatches, agent runs, sync conflicts), and revocation (suspended/revoked installations receive nothing; revoked grants stop delivery), plus the derived access-review model (typed review records derived deterministically from the recorded audit trail — A7 discipline, cross-tenant review queries typed-rejected), sensitive-action alert rules (typed rule descriptors evaluated deterministically over the audit stream with full provenance), retention policy contracts (typed event-class -> retention-class rules with an immutable-audit-trail invariant and a pure retain/expire projection — actual deletion is never performed here; the ledger is immutable), and the composed SecurityAuditReport. Depends only on @office/authz (the deny-by-default evaluator + Policy/AuthorizationContext under test), @office/actions (THE gateway + its audit events, driven with in-memory handlers), @office/app-runtime (the AppInstallation lifecycle + dispatch engines, driven in-memory through its exported fail-closed parses), @office/events (ledger identity vocabulary — deterministic ledger event ids), @office/contracts (envelopes/Actor/Scope), and @office/domain-kernel (Result/DomainError). No external dependencies; no network I/O; no provider vocabulary; agents' execution-record types are consumed only through the @office/contracts envelope grammar.",
+  "sideEffects": false,
+  "main": "./src/index.ts",
+  "types": "./src/index.ts",
+  "exports": {
+    ".": "./src/index.ts",
+    "./package.json": "./package.json"
+  },
+  "dependencies": {
+    "@office/actions": "workspace:^",
+    "@office/app-runtime": "workspace:^",
+    "@office/authz": "workspace:^",
+    "@office/contracts": "workspace:^",
+    "@office/domain-kernel": "workspace:^",
+    "@office/events": "workspace:^"
+  }
+}

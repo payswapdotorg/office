@@ -1,0 +1,23 @@
+{
+  "name": "@office/intelligence-stack-analysis",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Office software-stack replacement analysis (OFF-035): the intelligence layer's customer software-portfolio analytics engine — workflow COVERAGE and REPLACEMENT-POTENTIAL measurements by external system (the adapters-sdk observed-system vocabulary: the declared object-kind/capability sync surfaces) and by installed app (the app-sdk manifest vocabulary: the declared permissions/command/event surfaces, resolved through the marketplace's release/entitlement/installation-link records). THE discipline: every replacement score is DERIVED from the observed workflows/capabilities — an exposed, recomputable exact-rational composition over the referenced records (covered capabilities / observed surface capabilities) — NEVER an arbitrary manual score; the scan inputs carry records only, every score is a computed field, and a manual score fed anywhere into the fail-closed input validation is a typed unknown-field rejection. Coverage and gap records are typed and evidenced (every capability names the object kinds or permission specs that observed it); assessments are PROJECTIONS — suggestion-only typed data records with no command construction, no marketplace mutation, and no canonical state mutation of any kind; observed-performance bases are referenced OutcomeRecord/benchmark ids from the intelligence memory engine. Deterministic throughout: injected scan identity + clock, canonical iteration orders (run-twice byte-identical, shuffled inputs irrelevant), A12 authorization before scans and queries in both directions, and typed audit envelopes (A3) emitted through an injected sink. Depends only on @office/adapters-sdk (the provider-neutral observed-system vocabulary — typed read surface only, never adapter implementations), @office/app-sdk (the manifest/permission vocabulary), @office/marketplace (the catalog/entitlement/installation-link records), @office/intelligence-memory (OutcomeRecord/Benchmark facts + the exact-Rational shape), @office/contracts, @office/domain-kernel, and @office/authz.",
+  "sideEffects": false,
+  "main": "./src/index.ts",
+  "types": "./src/index.ts",
+  "exports": {
+    ".": "./src/index.ts",
+    "./package.json": "./package.json"
+  },
+  "dependencies": {
+    "@office/adapters-sdk": "workspace:^",
+    "@office/app-sdk": "workspace:^",
+    "@office/authz": "workspace:^",
+    "@office/contracts": "workspace:^",
+    "@office/domain-kernel": "workspace:^",
+    "@office/intelligence-memory": "workspace:^",
+    "@office/marketplace": "workspace:^"
+  }
+}

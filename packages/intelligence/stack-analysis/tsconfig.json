@@ -1,0 +1,15 @@
+{
+  // @office/intelligence-stack-analysis TypeScript config (OFF-035).
+  // Extends the workspace base (three levels up: packages/intelligence/
+  // stack-analysis -> repo root). The root tsconfig already spans
+  // packages/**/*.ts for `pnpm typecheck`, so this package is
+  // typecheck-gated without a build step (source package, no compilation —
+  // same convention as every @office package, and symmetric with the landed
+  // intelligence peers exceptions/margin/memory/relationships/revenue).
+  "$schema": "https://json.schemastore.org/tsconfig",
+  "extends": "../../../tsconfig.base.json",
+  "compilerOptions": {
+    "noEmit": true
+  },
+  "include": ["src", "vitest.config.ts"]
+}

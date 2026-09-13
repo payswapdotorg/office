@@ -1,8 +1,26 @@
 # Office Implementation Status
 
-Status: production implementation STARTED — 26/40 items done (OFF-001..OFF-022 + OFF-025 + OFF-026 + OFF-028 + OFF-029). Next wave READY: OFF-036 (platform composition) + OFF-023 + OFF-024 (remaining adapters) — dispatched in parallel; OFF-037 unblocks when they + 030/033/034 land.
+Status: production implementation STARTED — 28/40 items done (OFF-001..OFF-022 + OFF-025 + OFF-026 + OFF-028 + OFF-029 + OFF-023 + OFF-036). In flight: OFF-024 (attempt 2 — continuation). Next wave dispatched: OFF-027 (marketplace) + OFF-030 (web shell). OFF-037 unblocks when 024/030/033/034 land.
 
 ## Completed work items
+
+### OFF-036 Security/audit hardening — DONE (2026-09-13)
+
+- Merge: PR #37 squash-merged as `e394786` on `main` (rebased onto post-023 main; lockfile merged cleanly, frozen-install consistency re-verified, PR head force-with-lease updated).
+- Worker: local subagent (attempt 1 wrote the full package + pushed 7d6ea30; the report was lost to a session interruption — verified by direct Tech-Lead inspection instead of a worker report, per the evidence rule).
+- Acceptance evidence (station-verified fresh checkout): install --frozen-lockfile 0; lint 0; typecheck 0; `pnpm test` **2748/2748**; architecture 5/5.
+- Acceptance gates proven: the conformance harness drives the REAL action gateway (`createActionGateway`) and the REAL app runtime (`createAppRuntime`) — tenant isolation A12 both directions, deny-by-default authorization matrices, audit-completeness counting (every consequential mutation → envelope), revocation (suspended/revoked installations receive nothing); access reviews derived deterministically from audit trails; sensitive-action alert evaluation run-twice deterministic; retention rules data+evaluation only (ledger immutable — no deletion). Boundary test: six workspace deps exactly.
+- Produced `@office/security`. For OFF-038 release gates + OFF-040 consumption.
+- Review gates: ownership exact (packages/security/** + lockfile); no network I/O; no secrets; frozen docs untouched.
+
+### OFF-023 Primavera-class schedule adapter — DONE (2026-09-13)
+
+- Merge: PR #36 squash-merged as `3c45067` on `main`.
+- Worker: local subagent (2 attempts; attempt 2 completed the suite — THE acceptance fixture, sync/boundary/adapter tests, README — and fixed the inherited defects the first gate run exposed: two small inherited-source fixes, both error-surface improvements).
+- Acceptance evidence (station-verified fresh checkout): install --frozen-lockfile 0; lint 0; typecheck 0; `pnpm test` **2753/2753** (108 new in @office/adapter-schedule across 9 suites); architecture 5/5.
+- Acceptance gates proven: THE provider activity update → canonical schedule event → downstream impact notification flow (end-to-end in schedule-flow.test.ts — the notification references the source event id with causation/correlation/provenance traceability); the three typed conflict rules through the sync driver (concurrent activity-date change, dependency-cycle introduction quarantined, re-baselining against a protected baseline quarantined — no auto-resolution); baseline immutability (provider baseline updates → NEW canonical baseline records); replay-safe sync with positional cursors; run-twice determinism.
+- Produced `@office/adapter-schedule`. For OFF-037 consumption (third of four adapter deps; OFF-024 remains).
+- Review gates: ownership exact (packages/adapter-schedule/** + lockfile); no network I/O; generic vocabulary (schedule-pm); no secrets; frozen docs untouched.
 
 ### OFF-022 Autodesk/Model adapter contract — DONE (2026-09-13)
 
@@ -237,12 +255,11 @@ Status: production implementation STARTED — 26/40 items done (OFF-001..OFF-022
 
 ## Current ready queue
 
-- `OFF-007` Enterprise/project identity model (`packages/domain/organization`, `packages/domain/projects`; depends OFF-004 ✅ + OFF-006 ✅) — in flight through the replay worker channel.
-- NEXT WAVE (unblocked the moment OFF-007 merges; worker cap 3): `OFF-008` Documents/evidence model, `OFF-009` Work/field model, `OFF-010` Schedule/program-of-work model (all depend OFF-004 ✅ + OFF-005 ✅ + OFF-006 ✅ + OFF-007).
-
-## After OFF-005 + OFF-007
-
-- The Phase 2 domain wave opens: OFF-008/OFF-009/OFF-010/OFF-011/OFF-012 all depend on OFF-004+OFF-005+OFF-006+OFF-007 — dispatch up to three disjoint domain workers from that set (e.g. OFF-008 + OFF-009 + OFF-010) once both land. The dependency graph remains authoritative for readiness.
+- `OFF-024` ERP/finance adapter (`packages/adapter-finance`; depends OFF-020 ✅) — IN FLIGHT (attempt 2: attempt 1 left 19 files/8.5K lines uncommitted; continuation completes the suite + gates + push).
+- `OFF-027` Marketplace catalog/lifecycle (`packages/marketplace`; depends OFF-025 ✅ + OFF-026 ✅) — IN FLIGHT.
+- `OFF-030` Web application shell (`apps/web`; depends 007/008/009/010/011/012/016/018/019/028 all ✅) — IN FLIGHT.
+- NEXT WAVE (READY now, worker cap 3): `OFF-033` Revenue recovery intelligence, `OFF-034` Procurement optimization intelligence, `OFF-031` Field/offline web client (031 READY via 029 ✅), `OFF-032` Desktop protocol shell (READY via 002/025/028/029 ✅).
+- Then: OFF-037 (needs 021✅+022✅+023✅+024+030+033+034) + OFF-035 (needs 027 + 015✅); then OFF-038 (036✅+037) → OFF-039 → OFF-040.
 
 ## Phase tracker issues
 

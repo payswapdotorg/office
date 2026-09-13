@@ -1,0 +1,26 @@
+{
+  "name": "@office/field-client",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Office field/offline web client (OFF-031): the offline-capable field experience as a typed, deterministic VIEW-MODEL layer over @office/client-sync's engine — capture on a disconnected network, reconnect, synchronize (the engine's exactly-once drain), and CONFLICT STATE as displayable view models (both sides + provenance; PROTECTED conflicts show the no-auto-resolution state whose only exit is the typed explicit resolution command as a user action; OPEN conflicts show the deterministic supersession outcome). Pure TypeScript view models + the injected in-memory engine: NO UI framework, NO DOM, NO service workers (the offline ENGINE is @office/client-sync — this app composes it, deterministically, in memory), NO direct database access (structurally database-free: no @office/persistence import anywhere, no SQL, no repositories — verified by the boundary self-gate), and NO import of @office/web (apps never import apps — the landed shell is the structural template, mirrored not imported). Every view model is a deterministic projection of the seeded world's public package surfaces (run-twice identical); commands surface typed Results (rejections become displayable view models, never thrown).",
+  "sideEffects": false,
+  "main": "./src/index.ts",
+  "types": "./src/index.ts",
+  "exports": {
+    ".": "./src/index.ts",
+    "./package.json": "./package.json"
+  },
+  "dependencies": {
+    "@office/actions": "workspace:^",
+    "@office/authz": "workspace:^",
+    "@office/client-sync": "workspace:^",
+    "@office/contracts": "workspace:^",
+    "@office/domain-field": "workspace:^",
+    "@office/domain-kernel": "workspace:^",
+    "@office/domain-organization": "workspace:^",
+    "@office/domain-projects": "workspace:^",
+    "@office/events": "workspace:^",
+    "@office/sync": "workspace:^"
+  }
+}

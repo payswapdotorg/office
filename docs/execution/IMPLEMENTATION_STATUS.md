@@ -1,8 +1,35 @@
 # Office Implementation Status
 
-Status: production implementation STARTED — 17/40 items done (OFF-001..OFF-014 + OFF-016 + OFF-020 + OFF-028). Next wave READY: OFF-015 (enterprise memory) + OFF-017 (action gateway) + OFF-029 (offline sync) — dispatched in parallel; together they unblock OFF-018 next.
+Status: production implementation STARTED — 20/40 items done (OFF-001..OFF-017 + OFF-020 + OFF-028 + OFF-029). Next wave READY: OFF-018 (agent runtime) + OFF-019 (recommendation engine) + OFF-025 (app runtime) — dispatched in parallel; provider adapters 021-024 + OFF-031 queued behind them.
 
 ## Completed work items
+
+### OFF-029 Offline sync protocol — DONE (2026-09-13)
+
+- Merge: PR #29 squash-merged as `d57f2e8` on `main`.
+- Worker: local subagent (3 attempts; attempt 3 wrote the five missing suites — replay/conflict/engine/audit/boundary — fixed the counting-command-path occurredAt defect breaking slice append-stability, wrote the README).
+- Acceptance evidence (station-verified fresh checkout): install --frozen-lockfile 0; lint 0; typecheck 0; `pnpm test` **1753/1753** (59 new in @office/client-sync across 8 suites); architecture 5/5.
+- Acceptance gates proven: offline mutations replay ONCE (handler counting; interrupted mid-drain → resumed → still exactly once; crash-gap resume; revoked-grant + deny-writes replay denials); protected conflicts REQUIRE explicit resolution — STRUCTURALLY no auto-resolution path (the replay engine cannot apply a protected conflict without an explicit resolution command; resolution re-enters the queue and applies once; idempotent/differing re-resolution typed-distinct); THE offline two-client convergence (A offline queues while B mutates online; reconnect → catchup + replay + conflict surfacing → identical state); deterministic operation ids; A12 session scope gate; audit envelopes through the EventSink port.
+- Produced `@office/client-sync`: LocalQueue, replay protocol, causal/version tokens, conflict surfacing, the composed SyncEngine — all consuming @office/sync's foundation. For OFF-030/031/032 consumption.
+- Review gates: ownership exact; no network I/O; no domain/intelligence/adapters/workflows/actions imports; no provider vocabulary; secrets scan clean.
+
+### OFF-017 Action gateway — DONE (2026-09-13)
+
+- Merge: PR #28 squash-merged as `c0feed3` on `main`.
+- Worker: local subagent (3 attempts; attempt 3 closed the coverage gap — the exported workflows-backed ApprovalAuthority adapter had zero tests; new suite drives it through the REAL workflow engine + REAL gateway).
+- Acceptance evidence (station-verified fresh checkout): install --frozen-lockfile 0; lint 0; typecheck 0; `pnpm test` **1808/1808** (114 new in @office/actions across 8 suites); architecture 5/5.
+- Acceptance gates proven: direct unauthorized writes fail (typed denial BEFORE handler invocation, counting-proven; no actor kind bypasses; A12); duplicate action keys → the ORIGINAL result, handler exactly once, duplicate-observed audit; approval-required actions NEVER execute without workflow completion (force-execute typed-rejected); fail-closed classification (unknown → prohibited; prohibited never reach the handler); A4 evidence/confidence enforcement (missing → typed rejection; approved carry refs).
+- Produced `@office/actions`: ActionDescriptor registry, the four-class classification, executeAction() — the A8 chokepoint — idempotency, evidence enforcement, audit events, the workflows-backed approval routing. For OFF-026/030/031/033/034/036 consumption.
+- Review gates: ownership exact; no domain/intelligence/adapters/sync imports; no provider vocabulary; secrets scan clean.
+
+### OFF-015 Enterprise memory and benchmarking — DONE (2026-09-13)
+
+- Merge: PR #27 squash-merged as `95aa3c4` on `main`.
+- Worker: local subagent (3 attempts; attempt 3 fixed 16 inherited typecheck defects + 2 lint + 2 broken tests, hardened the lesson parser, completed the 123-test suite + README).
+- Acceptance evidence (station-verified fresh checkout): install --frozen-lockfile 0; lint 0; typecheck 0; `pnpm test` **1817/1817** (123 new in @office/intelligence-memory across 10 suites); architecture 5/5.
+- Acceptance gates proven: THE named acceptance — queried outcomes → DETERMINISTIC benchmark facts (run-twice byte-identical; values carry producing outcome ids); NO opaque AI in core storage (boundary test asserts no AI/LLM/network imports, fragment-assembled patterns); projections never become canonical truth (tamper-with-memory never propagates — rebuild discards tampering; the event stream is the only source); similarity with EXPOSED score composition; A12 both directions with authorization BEFORE queries (poisoned-store probe); EventSink port envelopes round-trip; outcome immutability.
+- Produced `@office/intelligence-memory`: OutcomeRecord, Benchmarks, Lessons, typed similarity, the rebuildable-projection discipline. For OFF-018/019/034/035 consumption.
+- Review gates: ownership exact; intelligence peers + contracts/domain-kernel/authz/events only; no provider vocabulary; secrets scan clean.
 
 ### OFF-028 Realtime subscription protocol — DONE (2026-09-13)
 

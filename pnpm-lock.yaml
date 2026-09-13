@@ -823,6 +823,57 @@ importers:
         specifier: ^8.23.0
         version: 8.23.0
 
+  packages/reference-scenario:
+    dependencies:
+      '@office/adapter-construction':
+        specifier: workspace:^
+        version: link:../adapter-construction
+      '@office/adapter-finance':
+        specifier: workspace:^
+        version: link:../adapter-finance
+      '@office/adapter-model':
+        specifier: workspace:^
+        version: link:../adapter-model
+      '@office/adapter-schedule':
+        specifier: workspace:^
+        version: link:../adapter-schedule
+      '@office/agents':
+        specifier: workspace:^
+        version: link:../agents
+      '@office/authz':
+        specifier: workspace:^
+        version: link:../authz
+      '@office/contracts':
+        specifier: workspace:^
+        version: link:../contracts
+      '@office/domain-cost':
+        specifier: workspace:^
+        version: link:../domain/cost
+      '@office/domain-kernel':
+        specifier: workspace:^
+        version: link:../domain-kernel
+      '@office/domain-organization':
+        specifier: workspace:^
+        version: link:../domain/organization
+      '@office/domain-projects':
+        specifier: workspace:^
+        version: link:../domain/projects
+      '@office/domain-schedule':
+        specifier: workspace:^
+        version: link:../domain/schedule
+      '@office/events':
+        specifier: workspace:^
+        version: link:../events
+      '@office/intelligence-procurement':
+        specifier: workspace:^
+        version: link:../intelligence/procurement
+      '@office/intelligence-revenue':
+        specifier: workspace:^
+        version: link:../intelligence/revenue
+      '@office/workflows':
+        specifier: workspace:^
+        version: link:../workflows
+
   packages/security:
     dependencies:
       '@office/actions':

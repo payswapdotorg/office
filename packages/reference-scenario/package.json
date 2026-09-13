@@ -1,0 +1,32 @@
+{
+  "name": "@office/reference-scenario",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Office end-to-end construction reference scenario (OFF-037): THE deterministic integration-acceptance composition that wires the landed packages into one golden chain — model adapter fixture delivers an element mutation -> change detection -> quantity/cost impact recorded through domain-cost's typed command path -> schedule adapter fixture delivers the activity update -> schedule impact through domain-schedule -> change evidence packet assembled under the agents EvidenceSet discipline -> approval routed and decided through workflows -> EXECUTION of the approved change through the canonical command services -> the in-memory ledger + every linked projection reflects the executed change. Proves the two named invariants: (1) every linked projection agrees on the causal IDs (the causality chain walked event -> command -> aggregate -> projection -> evidence, end to end); (2) no duplicate canonical records appear — including under replay of the same adapter notifications (the adapters' source-version discipline) and on run-twice byte-identical world + ledger. Deterministic in-memory composition only: injected clock/id suppliers, no persistence (not even type-only), no sync/client-sync/app-runtime/marketplace/security/app-sdk/adapters-sdk/test-fixtures, no network, no LLM/AI calls. Generic fixture vocabulary only. Depends only on the four landed adapters, the four seeded domain command packages, workflows, agents (the EvidenceSet discipline), events (the ledger identity semantics), contracts, domain-kernel, authz, and the two intelligence engines' detection surfaces.",
+  "sideEffects": false,
+  "main": "./src/index.ts",
+  "types": "./src/index.ts",
+  "exports": {
+    ".": "./src/index.ts",
+    "./package.json": "./package.json"
+  },
+  "dependencies": {
+    "@office/adapter-construction": "workspace:^",
+    "@office/adapter-finance": "workspace:^",
+    "@office/adapter-model": "workspace:^",
+    "@office/adapter-schedule": "workspace:^",
+    "@office/agents": "workspace:^",
+    "@office/authz": "workspace:^",
+    "@office/contracts": "workspace:^",
+    "@office/domain-cost": "workspace:^",
+    "@office/domain-kernel": "workspace:^",
+    "@office/domain-organization": "workspace:^",
+    "@office/domain-projects": "workspace:^",
+    "@office/domain-schedule": "workspace:^",
+    "@office/events": "workspace:^",
+    "@office/intelligence-procurement": "workspace:^",
+    "@office/intelligence-revenue": "workspace:^",
+    "@office/workflows": "workspace:^"
+  }
+}

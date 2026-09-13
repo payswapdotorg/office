@@ -1,0 +1,20 @@
+{
+  "name": "@office/adapter-schedule",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Office Primavera-class schedule adapter contract (OFF-023): the schedule adapter over @office/adapters-sdk — project-schedule/activity/activity-dependency/baseline reference mappings (provider ids never primary keys, baselines immutable), activity change-event mapping into canonical schedules-area command proposals and event envelopes with typed CPM data (durations, FS/SS/FF/SF dependencies + lag), THE downstream impact-notification flow (provider activity update → canonical schedule event → impacted successor activities + the baseline notified with full source-event traceability, typed against the @office/intelligence-relationships vocabulary), the typed schedule conflict rules (concurrent activity-date changes, dependency-cycle introductions, re-baselining attempts against protected baselines — explicit Conflict records with both sides, never auto-resolved), and replay-safe multi-stream sync with quarantine for divergent provider changes. Generic vocabulary only (adapter kind 'schedule-pm', system 'schedule-instance-01'); ports only — no I/O, no SQL, no clock, no randomness; depends only on @office/adapters-sdk, @office/contracts, @office/domain-kernel, and @office/intelligence-relationships (types only).",
+  "sideEffects": false,
+  "main": "./src/index.ts",
+  "types": "./src/index.ts",
+  "exports": {
+    ".": "./src/index.ts",
+    "./package.json": "./package.json"
+  },
+  "dependencies": {
+    "@office/adapters-sdk": "workspace:^",
+    "@office/contracts": "workspace:^",
+    "@office/domain-kernel": "workspace:^",
+    "@office/intelligence-relationships": "workspace:^"
+  }
+}

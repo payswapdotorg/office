@@ -1,0 +1,19 @@
+{
+  "name": "@office/adapter-finance",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Office ERP/finance adapter contract (OFF-024): the generic ERP/finance Adapter over the @office/adapters-sdk contract — financial reference mapping (provider account/cost-code/commitment/invoice/payment ids → canonical EntityIds, provider ids never primary keys), typed reconciliation interfaces (per-reference balance comparisons with typed discrepancy kinds carrying both sides), and THE source-version-mapped NON-DUPLICATING financial synchronization (the same provider version never proposes twice; every duplicate attempt counted and typed-deduplicated) with the explicit conflict discipline for material commercial state (no auto-resolution, ever). Generic provider vocabulary only (adapter kind 'erp-finance'); all provider-specific shapes live inside this package. Ports only: no I/O, no SQL, no clock, no randomness; depends only on @office/adapters-sdk, @office/contracts, and @office/domain-kernel.",
+  "sideEffects": false,
+  "main": "./src/index.ts",
+  "types": "./src/index.ts",
+  "exports": {
+    ".": "./src/index.ts",
+    "./package.json": "./package.json"
+  },
+  "dependencies": {
+    "@office/adapters-sdk": "workspace:^",
+    "@office/contracts": "workspace:^",
+    "@office/domain-kernel": "workspace:^"
+  }
+}

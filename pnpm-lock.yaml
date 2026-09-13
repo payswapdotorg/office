@@ -265,6 +265,27 @@ importers:
         specifier: workspace:^
         version: link:../persistence
 
+  packages/app-runtime:
+    dependencies:
+      '@office/actions':
+        specifier: workspace:^
+        version: link:../actions
+      '@office/app-sdk':
+        specifier: workspace:^
+        version: link:../app-sdk
+      '@office/authz':
+        specifier: workspace:^
+        version: link:../authz
+      '@office/contracts':
+        specifier: workspace:^
+        version: link:../contracts
+      '@office/domain-kernel':
+        specifier: workspace:^
+        version: link:../domain-kernel
+      '@office/persistence':
+        specifier: workspace:^
+        version: link:../persistence
+
   packages/app-sdk:
     dependencies:
       '@office/actions':

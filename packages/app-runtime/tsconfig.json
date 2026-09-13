@@ -1,0 +1,14 @@
+{
+  // @office/app-runtime TypeScript config (OFF-026).
+  // Extends the workspace base (two levels up: packages/app-runtime -> repo
+  // root). The root tsconfig already spans packages/**/*.ts for
+  // `pnpm typecheck`, so this package is typecheck-gated without a build step
+  // (source package, no compilation — same convention as every @office
+  // package, and symmetric with packages/app-sdk and packages/agents).
+  "$schema": "https://json.schemastore.org/tsconfig",
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    "noEmit": true
+  },
+  "include": ["src"]
+}

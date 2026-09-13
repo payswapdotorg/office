@@ -1,0 +1,22 @@
+{
+  "name": "@office/app-runtime",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Office app runtime and sandbox boundary (OFF-026): tenant-scoped AppInstallations with a typed lifecycle (installing → active → suspended → revoked / uninstalled, one-way revocation), A9 permission enforcement (every command dispatch re-checks the installation's live grants BEFORE the gateway; grants are re-checked at event dispatch), the per-installation app command/event namespace with typed collision rejection, declared lifecycle hooks (on-install/on-activate/on-suspend/on-revoke — symbolic descriptor records the host invokes, never code), suspend/revoke semantics (a suspended installation receives NO commands and NO events), and gateway-mediated dispatch (appCommandDispatch builds the app actor's proposal and hands it to executeAction — the ONLY mutation path, freeze A8; appEventDispatch produces the typed delivery record), both fully audited through the AppEventSink port. Depends only on @office/app-sdk (manifest/permission records/validation ports), @office/actions (THE gateway + the proposal/evidence vocabulary), @office/contracts (envelopes/Actor/parse helpers), @office/authz (the closed capability vocabulary + Policy), @office/domain-kernel (Result/DomainError), and the TYPE-ONLY SqlExecutor surface of @office/persistence (the EventSink port signature). No arbitrary app code is executed here — the runtime mediates commands and events for declared apps.",
+  "sideEffects": false,
+  "main": "./src/index.ts",
+  "types": "./src/index.ts",
+  "exports": {
+    ".": "./src/index.ts",
+    "./package.json": "./package.json"
+  },
+  "dependencies": {
+    "@office/actions": "workspace:^",
+    "@office/app-sdk": "workspace:^",
+    "@office/authz": "workspace:^",
+    "@office/contracts": "workspace:^",
+    "@office/domain-kernel": "workspace:^",
+    "@office/persistence": "workspace:^"
+  }
+}

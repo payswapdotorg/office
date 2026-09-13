@@ -1,0 +1,20 @@
+{
+  "name": "@office/adapter-model",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Office BIM/model adapter contract (OFF-022): the Autodesk-class model adapter over @office/adapters-sdk — model/model-version/element/element-classification reference mappings (provider ids never primary keys), element change-event mapping into canonical models-area command proposals and event envelopes (delete-of-version retirement, never destructive history deletes), the affected-relationship notification flow (element mutation → canonical event → affected activity/document notifications, typed against the @office/intelligence-relationships vocabulary), and replay-safe multi-stream sync. Generic vocabulary only (adapter kind 'model-cde', system 'model-instance-01'); ports only — no I/O, no SQL, no clock, no randomness; depends only on @office/adapters-sdk, @office/contracts, @office/domain-kernel, and @office/intelligence-relationships (types only).",
+  "sideEffects": false,
+  "main": "./src/index.ts",
+  "types": "./src/index.ts",
+  "exports": {
+    ".": "./src/index.ts",
+    "./package.json": "./package.json"
+  },
+  "dependencies": {
+    "@office/adapters-sdk": "workspace:^",
+    "@office/contracts": "workspace:^",
+    "@office/domain-kernel": "workspace:^",
+    "@office/intelligence-relationships": "workspace:^"
+  }
+}

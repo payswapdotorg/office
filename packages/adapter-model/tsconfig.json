@@ -1,0 +1,13 @@
+{
+  // @office/adapter-model TypeScript config (OFF-022).
+  // Extends the workspace base; the root tsconfig spans packages/**/*.ts for
+  // `pnpm typecheck`, so this package is typecheck-gated without a build
+  // step (source package, no compilation — same convention as adapters-sdk,
+  // contracts, domain-kernel, and events).
+  "$schema": "https://json.schemastore.org/tsconfig",
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    "noEmit": true
+  },
+  "include": ["src"]
+}

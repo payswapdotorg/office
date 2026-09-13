@@ -1,8 +1,35 @@
 # Office Implementation Status
 
-Status: production implementation STARTED — 23/40 items done (OFF-001..OFF-019 + OFF-020 + OFF-025 + OFF-028 + OFF-029). Next wave READY: OFF-026 (app runtime) + OFF-021 + OFF-022 (provider adapters) — dispatched in parallel; the tail (OFF-036 → 038 → 039 → 040 and OFF-037) unblocks behind them.
+Status: production implementation STARTED — 26/40 items done (OFF-001..OFF-022 + OFF-025 + OFF-026 + OFF-028 + OFF-029). Next wave READY: OFF-036 (platform composition) + OFF-023 + OFF-024 (remaining adapters) — dispatched in parallel; OFF-037 unblocks when they + 030/033/034 land.
 
 ## Completed work items
+
+### OFF-022 Autodesk/Model adapter contract — DONE (2026-09-13)
+
+- Merge: PR #35 squash-merged as `6095956` on `main` (one parallel-lockfile recovery: rebased onto post-026/021 main, lockfile regenerated, gates re-run green at 7869f16, PR head force-with-lease updated).
+- Worker: local subagent (3 attempts; attempt 3 cleared 62 test-layer typecheck errors against the real SDK signatures — zero source defects).
+- Acceptance evidence (station-verified fresh checkout): install --frozen-lockfile 0; lint 0; typecheck 0; `pnpm test` **2436/2436** (114 new in @office/adapter-model across 8 suites); architecture 5/5.
+- Acceptance gates proven: THE model element mutation → canonical event → affected relationship notification flow (end-to-end fixture; the notification record references the source event id — full traceability); model/version/element reference mappings (A10: deterministic, remapping → explicit conflicts; immutable model versions); replay-safe sync; boundary test (adapters-sdk + contracts + domain-kernel + intelligence-relationships vocabulary constants/projection types only — documented deviation at contract level).
+- Produced `@office/adapter-model`. For OFF-037 consumption.
+- Review gates: ownership exact; no network I/O; generic vocabulary (model-cde); no secrets; frozen docs untouched.
+
+### OFF-021 Procore-class construction adapter — DONE (2026-09-13)
+
+- Merge: PR #34 squash-merged as `95a8b45` on `main`.
+- Worker: local subagent (2 attempts + Tech-Lead gates finish; the full contract-test suite was written by attempt 2).
+- Acceptance evidence (station-verified fresh checkout): install --frozen-lockfile 0; lint 0; typecheck 0; `pnpm test` **2398/2398** (new suite incl. THE contract-test round-trip); architecture 5/5.
+- Acceptance gates proven: THE ingest/update/source-mapping/replay round-trip on the fixture (initial ingest → snapshots + mappings + command proposals; update → proposal + cursor advance; source mapping deterministic with cross-tenant lookups typed-rejected; replay idempotent + cursor restart safe + divergence → explicit Conflicts); no provider types in core (boundary test: imports ONLY adapters-sdk + contracts + domain-kernel); A10/A11 discipline.
+- Produced `@office/adapter-construction` (the reference construction/CDE adapter). For OFF-037 consumption.
+- Review gates: ownership exact; no network I/O; generic vocabulary (construction-cde); no secrets; frozen docs untouched.
+
+### OFF-026 App runtime/sandbox boundary — DONE (2026-09-13)
+
+- Merge: PR #33 squash-merged as `8bdd1d3` on `main`.
+- Worker: local subagent (2 attempts; attempt 2 completed the acceptance suite — 128 new tests — fixed inherited defects, wrote the README).
+- Acceptance evidence (station-verified fresh checkout): install --frozen-lockfile 0; lint 0; typecheck 0; `pnpm test` **2455/2455** (133 new in @office/app-runtime across 8 suites); architecture 5/5.
+- Acceptance gates proven: app CANNOT access undeclared capability or another tenant (typed rejection BEFORE the gateway with handler-invocation counting; the 15-cell lifecycle×grant matrix shows exactly one dispatching cell; A12 both directions); suspended app receives NO commands/events (both paths typed-rejected + audited; reversible by re-activation; one-way revocation); A8 gateway-mediated only (boundary self-scan); typed namespace with collision rejection; lifecycle hooks as descriptor records.
+- Produced `@office/app-runtime`: AppInstallation, permission enforcement, namespace, hooks, dispatch engines. For OFF-027 marketplace + OFF-030/031/035 consumption.
+- Review gates: ownership exact; @office/persistence type-only (port convention, boundary-test enforced); no provider vocabulary; no secrets; frozen docs untouched.
 
 ### OFF-025 App SDK and manifest — DONE (2026-09-13)
 

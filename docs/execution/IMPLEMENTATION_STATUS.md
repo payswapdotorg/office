@@ -1,8 +1,17 @@
 # Office Implementation Status
 
-Status: production implementation STARTED — 36/40 items done (through OFF-034 and OFF-032; PRs #44/#45). Remaining 4 — the serial tail: OFF-037 (ALL dependencies ✅ — dispatching now) → OFF-038 (036✅+037) → OFF-039 → OFF-040. Station verify (fresh-checkout gates on the pushed branch + post-merge main) remains the merge authority. Post-merge main: 267 files / 3506 tests, all five gates rc=0.
+Status: production implementation STARTED — 37/40 items done (through OFF-037; PR #46). Remaining 3 — the serial tail: OFF-038 (036✅+037✅ — READY, dispatching now) → OFF-039 → OFF-040. Station verify (fresh-checkout gates on the pushed branch + post-merge main) remains the merge authority. Post-merge main: 271 files / 3530 tests, all five gates rc=0.
 
 ## Completed work items
+
+### OFF-037 End-to-end construction reference scenario — DONE (2026-09-13)
+
+- Merge: squash-merged via PR #46 as `1d0ced0` on `main`.
+- Worker: local subagent (4 attempts + direct Tech-Lead core debugging; attempts 1-3 died to infrastructure context deadlines at increasing completion — attempt 4 delivered the three acceptance suites + README over the Tech-Lead-green core).
+- Acceptance evidence (station-verified on the pushed branch f54575e by the Tech Lead): install 0; lint 0; typecheck 0; `pnpm test` **3530/3530** (271 files; reference-scenario: 5 suites — smoke 1 + golden 7 + a12 4 + boundary 12); architecture 5/5; post-merge main re-verified identical.
+- Acceptance gates proven: THE golden chain — model adapter mutation → change detection → cost impact through domain-cost's typed command path → schedule adapter activity update → schedule impact → evidence packet under the agents EvidenceSet discipline → workflow approval (review gate → submit → decide) → EXECUTION through the canonical command services → ledger + every projection reflects it; the revenue/procurement observers run over the post-execution world (procurement recommendations with evidence chains; revenue correctly zero — the executed change order claims the event). **Invariant #1 (causal-ID agreement)**: the causalWalk's 8 hops all resolve into the chain's event ids — every linked projection cites the same causal chain. **Invariant #2 (no duplicates)**: canonical counting + replayNotifications → 0 new canonical records + run-twice byte-identical ledgers. A12 both directions with zero effects; the 16-dep boundary self-gate.
+- Produced `@office/reference-scenario`. For OFF-038/039/040 consumption (the release gates run this suite as THE E2E fixture).
+- Review gates: ownership exact (packages/reference-scenario/** + lockfile); no persistence import; frozen docs untouched. The Tech Lead's 11 core fixes are documented in the worklog (host-seam conversions: capability dedup, positional canonical-id discipline, schedule date→instant, link-type casing, EntityId fixture refs, link-coordinate bindings, aggregate-version resolution through the owning schedule, machine transition order).
 
 ### OFF-034 Procurement optimization engine — DONE (2026-09-13)
 
@@ -326,8 +335,8 @@ Status: production implementation STARTED — 36/40 items done (through OFF-034 
 
 ## Current ready queue
 
-- `OFF-037` End-to-end construction reference scenario (`packages/reference-scenario`; depends 021✅ + 022✅ + 023✅ + 024✅ + 030✅ + 033✅ + 034✅ — ALL LANDED) — IN FLIGHT (worker dispatched; brief at office-ops/prompts/off-037.md).
-- Then the serial tail: OFF-038 production readiness (036✅ + 037) → OFF-039 architecture conformance gate → OFF-040 successor handoff verification.
+- `OFF-038` Production readiness and operational runbook (`packages/operations`; depends 036✅ + 037✅ — READY) — IN FLIGHT (worker dispatched; brief at office-ops/prompts/off-038.md).
+- Then: OFF-039 architecture conformance gate → OFF-040 successor handoff verification.
 
 ## Phase tracker issues
 

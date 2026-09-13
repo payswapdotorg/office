@@ -1,0 +1,23 @@
+{
+  "name": "@office/intelligence-revenue",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Office contractual revenue recovery engine (OFF-033): evidence-backed detection of candidate change orders and claims (revenue recovery opportunities) over the contracts/change domain model (the typed read surface of @office/domain-contracts) and the intelligence peers' outputs — the margin engine's ImpactAssessment values as the referenced economic basis (never re-derived numbers), the memory engine's OutcomeRecord/benchmark facts as the referenced historical basis. Every typed CandidateRecovery record carries the closed candidate kind vocabulary, the referenced canonical contracts-domain records, the complete A4 evidence chain (records + producing ledger events + assessments + outcomes + benchmarks, resolving end-to-end to producing source records) PLUS a qualified non-empty EvidenceSet mirroring the agents discipline (empty/unqualified evidence is a typed rejection), deterministic STABLE seeded prioritization with EXPOSED exact-rational score composition, and SUGGESTED next actions only: structurally NO path asserts a contractual claim, issues a command, or mutates canonical state — assertion without an explicit policy decision is a typed rejection and the only exit is a typed ProposedNextAction record. Detection and ranking are pure deterministic typed computation: no AI/LLM/network calls of any kind, no clock, no randomness (injected scan identity + clock), audit envelopes (A3) emitted through an injected sink. Depends only on @office/contracts (envelopes, EntityRefs, CommandName), @office/domain-kernel (Result/DomainError), @office/authz (deny-by-default recovery access), @office/domain-contracts (the canonical contracts/change model — typed read surface only), @office/agents (the EvidenceSet TYPE discipline — type-only), @office/intelligence-margin (ImpactAssessment values + AssessmentId/CurrencyCode), and @office/intelligence-memory (OutcomeRecord/Benchmark facts + the exact-Rational shape).",
+  "sideEffects": false,
+  "main": "./src/index.ts",
+  "types": "./src/index.ts",
+  "exports": {
+    ".": "./src/index.ts",
+    "./package.json": "./package.json"
+  },
+  "dependencies": {
+    "@office/agents": "workspace:^",
+    "@office/authz": "workspace:^",
+    "@office/contracts": "workspace:^",
+    "@office/domain-contracts": "workspace:^",
+    "@office/domain-kernel": "workspace:^",
+    "@office/intelligence-margin": "workspace:^",
+    "@office/intelligence-memory": "workspace:^"
+  }
+}

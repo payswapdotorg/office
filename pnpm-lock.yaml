@@ -652,6 +652,30 @@ importers:
         specifier: workspace:^
         version: link:../../events
 
+  packages/intelligence/revenue:
+    dependencies:
+      '@office/agents':
+        specifier: workspace:^
+        version: link:../../agents
+      '@office/authz':
+        specifier: workspace:^
+        version: link:../../authz
+      '@office/contracts':
+        specifier: workspace:^
+        version: link:../../contracts
+      '@office/domain-contracts':
+        specifier: workspace:^
+        version: link:../../domain/contracts
+      '@office/domain-kernel':
+        specifier: workspace:^
+        version: link:../../domain-kernel
+      '@office/intelligence-margin':
+        specifier: workspace:^
+        version: link:../margin
+      '@office/intelligence-memory':
+        specifier: workspace:^
+        version: link:../memory
+
   packages/marketplace:
     dependencies:
       '@office/app-runtime':

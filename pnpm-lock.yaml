@@ -194,6 +194,42 @@ importers:
         specifier: ^5.0.0
         version: 5.0.0(@types/node@22.20.2)(vite@8.3.0(@types/node@22.20.2))
 
+  apps/desktop:
+    dependencies:
+      '@office/actions':
+        specifier: workspace:^
+        version: link:../../packages/actions
+      '@office/authz':
+        specifier: workspace:^
+        version: link:../../packages/authz
+      '@office/client-sync':
+        specifier: workspace:^
+        version: link:../../packages/client-sync
+      '@office/contracts':
+        specifier: workspace:^
+        version: link:../../packages/contracts
+      '@office/domain-cost':
+        specifier: workspace:^
+        version: link:../../packages/domain/cost
+      '@office/domain-kernel':
+        specifier: workspace:^
+        version: link:../../packages/domain-kernel
+      '@office/domain-organization':
+        specifier: workspace:^
+        version: link:../../packages/domain/organization
+      '@office/domain-projects':
+        specifier: workspace:^
+        version: link:../../packages/domain/projects
+      '@office/domain-schedule':
+        specifier: workspace:^
+        version: link:../../packages/domain/schedule
+      '@office/events':
+        specifier: workspace:^
+        version: link:../../packages/events
+      '@office/sync':
+        specifier: workspace:^
+        version: link:../../packages/sync
+
   apps/field:
     dependencies:
       '@office/actions':

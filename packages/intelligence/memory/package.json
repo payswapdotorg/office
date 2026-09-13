@@ -1,0 +1,22 @@
+{
+  "name": "@office/intelligence-memory",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Office enterprise memory and benchmarking (OFF-015): the historical-learning module — deterministic OutcomeRecords derived from recorded events plus the margin engine's ImpactAssessment values, PURE benchmark facts computed from queried outcome sets (run-twice determinism; every value carries the producing outcome ids), reusable Lessons (typed links, applicability tags, provenance), typed project-similarity contracts with EXPOSED score composition (deterministic typed feature vectors — NO embeddings, NO opaque models), and the rebuildable memory-store projection (A2/A7: memory is a PROJECTION derived from its input events + assessments, never canonical truth). Depends only on @office/intelligence-margin (ImpactAssessment values + the commercial facts fold as outcome inputs), @office/intelligence-relationships (traversal subgraphs as similarity inputs), @office/contracts (envelopes, EntityRefs, parse helpers), @office/domain-kernel (Result/DomainError), @office/authz (deny-by-default permissioned memory reads), and @office/events (the ledger READ surface + LedgerEventId identity; this package never writes the ledger — memory events are emitted through the mirrored MemoryEventSink port). No AI/LLM/embedding/network dependency of ANY kind: similarity is deterministic typed computation over typed feature vectors.",
+  "sideEffects": false,
+  "main": "./src/index.ts",
+  "types": "./src/index.ts",
+  "exports": {
+    ".": "./src/index.ts",
+    "./package.json": "./package.json"
+  },
+  "dependencies": {
+    "@office/authz": "workspace:^",
+    "@office/contracts": "workspace:^",
+    "@office/domain-kernel": "workspace:^",
+    "@office/events": "workspace:^",
+    "@office/intelligence-margin": "workspace:^",
+    "@office/intelligence-relationships": "workspace:^"
+  }
+}

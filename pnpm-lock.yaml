@@ -194,6 +194,15 @@ importers:
         specifier: ^5.0.0
         version: 5.0.0(@types/node@22.20.2)(vite@8.3.0(@types/node@22.20.2))
 
+  apps/sample-app:
+    dependencies:
+      '@office/app-sdk':
+        specifier: workspace:^
+        version: link:../../packages/app-sdk
+      '@office/contracts':
+        specifier: workspace:^
+        version: link:../../packages/contracts
+
   apps/web: {}
 
   packages/actions:
@@ -255,6 +264,21 @@ importers:
       '@office/persistence':
         specifier: workspace:^
         version: link:../persistence
+
+  packages/app-sdk:
+    dependencies:
+      '@office/actions':
+        specifier: workspace:^
+        version: link:../actions
+      '@office/authz':
+        specifier: workspace:^
+        version: link:../authz
+      '@office/contracts':
+        specifier: workspace:^
+        version: link:../contracts
+      '@office/domain-kernel':
+        specifier: workspace:^
+        version: link:../domain-kernel
 
   packages/authz:
     dependencies:

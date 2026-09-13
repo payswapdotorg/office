@@ -1,0 +1,14 @@
+{
+  // @office-sample/app TypeScript config (OFF-025).
+  // Extends the workspace base exactly like apps/web and the packages do; the
+  // root tsconfig spans apps/**/*.ts for `pnpm typecheck`, so this app is
+  // typecheck-gated without a build step (source package, no compilation).
+  // The ONLY dependencies are @office/app-sdk + @office/contracts — the
+  // compile-against-SDK-only contract this app exists to prove.
+  "$schema": "https://json.schemastore.org/tsconfig",
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    "noEmit": true
+  },
+  "include": ["src"]
+}

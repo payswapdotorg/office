@@ -1,0 +1,13 @@
+{
+  // @office/desktop-shell TypeScript config (OFF-032).
+  // Extends the workspace base; the root tsconfig spans apps/**/*.ts for
+  // `pnpm typecheck`, so this app is typecheck-gated without a build step
+  // (source package, no compilation — same convention as every Office
+  // package). The root vitest config already includes `apps/*/src/**/*.test.ts`.
+  "$schema": "https://json.schemastore.org/tsconfig",
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    "noEmit": true
+  },
+  "include": ["src"]
+}

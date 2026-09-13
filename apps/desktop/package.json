@@ -1,0 +1,27 @@
+{
+  "name": "@office/desktop-shell",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Office desktop client protocol/reference shell (OFF-032): the platform shell HOST-PORT CONTRACT (the typed surface every desktop platform host must provide the shell — the session/identity port, the data-plane port, the command-executor port) plus the REFERENCE DESKTOP HOST that implements it in memory, consuming THE SAME sync/client-sync client protocol as the web and field shells (the A9 subscription + project slice, the client-sync offline engine: capture disconnected, reconnect, the exactly-once drain, conflict state as displayable view models with the typed explicit resolution as the only protected exit). Pure typed view models: NO UI framework, NO DOM, NO Electron/node runtime APIs (this is the typed reference host — the protocol proof, not a binary; the real platform host wires later), NO direct database access (structurally database-free: no @office/persistence import anywhere, no SQL — verified by the boundary self-gate), and NO platform-specific domain model (every domain term arrives from the shared contracts/domain packages through their fail-closed parsers — never a local raw-string branded cast; no @office/web or @office/field import — apps never import apps, the landed shells are the structural templates, mirrored not imported). The A8 gateway is consumed TYPE-ONLY; the shell never constructs one. Deterministic: injected clock/id suppliers only; run-twice identical view models.",
+  "sideEffects": false,
+  "main": "./src/index.ts",
+  "types": "./src/index.ts",
+  "exports": {
+    ".": "./src/index.ts",
+    "./package.json": "./package.json"
+  },
+  "dependencies": {
+    "@office/actions": "workspace:^",
+    "@office/authz": "workspace:^",
+    "@office/client-sync": "workspace:^",
+    "@office/contracts": "workspace:^",
+    "@office/domain-cost": "workspace:^",
+    "@office/domain-kernel": "workspace:^",
+    "@office/domain-organization": "workspace:^",
+    "@office/domain-projects": "workspace:^",
+    "@office/domain-schedule": "workspace:^",
+    "@office/events": "workspace:^",
+    "@office/sync": "workspace:^"
+  }
+}

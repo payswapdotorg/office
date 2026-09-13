@@ -1,0 +1,21 @@
+{
+  "name": "@office/workflows",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Office workflow/approval engine (OFF-016): versioned workflow definitions that are immutable once published (a definition change is a NEW version; instances pin their version), deterministic state machines over typed states and guarded typed transitions (conditions + required capabilities), typed task lifecycles with assignment actor kinds/roles and SLA windows measured against the injected clock, capability-gated policy-checked approval steps (an approval-requiring action cannot bypass policy; denials are audited), bounded deterministic retries (typed retry policy with backoff parameters from the definition), SLA escalation with definition-driven reassignment, and audit events through the EventSink port (mirroring the landed domain modules). Pure domain: no SQL, no migrations, no repository layer — deterministic, in-memory-testable, injected clock/id suppliers. Depends only on @office/contracts, @office/domain-kernel, @office/authz, @office/persistence (the EventSink port's executor type), and @office/events (the ledger-backed sink adapter).",
+  "sideEffects": false,
+  "main": "./src/index.ts",
+  "types": "./src/index.ts",
+  "exports": {
+    ".": "./src/index.ts",
+    "./package.json": "./package.json"
+  },
+  "dependencies": {
+    "@office/authz": "workspace:^",
+    "@office/contracts": "workspace:^",
+    "@office/domain-kernel": "workspace:^",
+    "@office/events": "workspace:^",
+    "@office/persistence": "workspace:^"
+  }
+}

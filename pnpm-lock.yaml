@@ -386,6 +386,24 @@ importers:
 
   packages/test-fixtures: {}
 
+  packages/workflows:
+    dependencies:
+      '@office/authz':
+        specifier: workspace:^
+        version: link:../authz
+      '@office/contracts':
+        specifier: workspace:^
+        version: link:../contracts
+      '@office/domain-kernel':
+        specifier: workspace:^
+        version: link:../domain-kernel
+      '@office/events':
+        specifier: workspace:^
+        version: link:../events
+      '@office/persistence':
+        specifier: workspace:^
+        version: link:../persistence
+
 packages:
 
   '@embedded-postgres/darwin-arm64@17.10.0-beta.17':

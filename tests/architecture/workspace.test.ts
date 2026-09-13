@@ -43,11 +43,18 @@ describe('workspace conventions (OFF-001)', () => {
     }
   });
 
-  it('keeps apps/web a placeholder until OFF-030', () => {
+  it('holds the landed OFF-030 web application shell source package', () => {
+    // OFF-001 pinned apps/web as a placeholder "until OFF-030"; OFF-030
+    // landed the shell, so the placeholder guard flips: apps/web now ships
+    // its source package (the typed view-model shell) with the same
+    // package.json/README.md conventions the placeholder established.
     expect(existsSync(join(repoRoot, 'apps', 'web', 'package.json'))).toBe(
       true,
     );
     expect(existsSync(join(repoRoot, 'apps', 'web', 'README.md'))).toBe(true);
-    expect(existsSync(join(repoRoot, 'apps', 'web', 'src'))).toBe(false);
+    expect(existsSync(join(repoRoot, 'apps', 'web', 'src'))).toBe(true);
+    expect(existsSync(join(repoRoot, 'apps', 'web', 'src', 'index.ts'))).toBe(
+      true,
+    );
   });
 });

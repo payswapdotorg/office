@@ -203,7 +203,62 @@ importers:
         specifier: workspace:^
         version: link:../../packages/contracts
 
-  apps/web: {}
+  apps/web:
+    dependencies:
+      '@office/actions':
+        specifier: workspace:^
+        version: link:../../packages/actions
+      '@office/authz':
+        specifier: workspace:^
+        version: link:../../packages/authz
+      '@office/client-sync':
+        specifier: workspace:^
+        version: link:../../packages/client-sync
+      '@office/contracts':
+        specifier: workspace:^
+        version: link:../../packages/contracts
+      '@office/domain-contracts':
+        specifier: workspace:^
+        version: link:../../packages/domain/contracts
+      '@office/domain-cost':
+        specifier: workspace:^
+        version: link:../../packages/domain/cost
+      '@office/domain-documents':
+        specifier: workspace:^
+        version: link:../../packages/domain/documents
+      '@office/domain-field':
+        specifier: workspace:^
+        version: link:../../packages/domain/field
+      '@office/domain-kernel':
+        specifier: workspace:^
+        version: link:../../packages/domain-kernel
+      '@office/domain-organization':
+        specifier: workspace:^
+        version: link:../../packages/domain/organization
+      '@office/domain-projects':
+        specifier: workspace:^
+        version: link:../../packages/domain/projects
+      '@office/domain-schedule':
+        specifier: workspace:^
+        version: link:../../packages/domain/schedule
+      '@office/events':
+        specifier: workspace:^
+        version: link:../../packages/events
+      '@office/intelligence-exceptions':
+        specifier: workspace:^
+        version: link:../../packages/intelligence/exceptions
+      '@office/intelligence-margin':
+        specifier: workspace:^
+        version: link:../../packages/intelligence/margin
+      '@office/intelligence-relationships':
+        specifier: workspace:^
+        version: link:../../packages/intelligence/relationships
+      '@office/sync':
+        specifier: workspace:^
+        version: link:../../packages/sync
+      '@office/workflows':
+        specifier: workspace:^
+        version: link:../../packages/workflows
 
   packages/actions:
     dependencies:

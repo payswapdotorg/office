@@ -1,0 +1,21 @@
+{
+  "name": "@office/marketplace",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Office marketplace catalog & lifecycle engine (OFF-027): tenant-scoped publisher registration and revocation, immutable app releases pinned to validated AppManifests, the queryable catalog (an AppCatalogSource), explicit revocable tenant entitlements, installation metadata linkage onto app-runtime AppInstallation identities, staged updates with the A9 permission-delta review (added capabilities require fresh confirmation), rollback, uninstall severance, and the typed audit ledger every lifecycle transition lands in — canonical project state provably untouched (A11). Depends only on @office/app-sdk, the TYPE-ONLY installation surface of @office/app-runtime, @office/authz, @office/contracts, and @office/domain-kernel; the marketplace never executes app code (A7), never constructs the action gateway or the app runtime, and never mutates canonical project state.",
+  "sideEffects": false,
+  "main": "./src/index.ts",
+  "types": "./src/index.ts",
+  "exports": {
+    ".": "./src/index.ts",
+    "./package.json": "./package.json"
+  },
+  "dependencies": {
+    "@office/app-runtime": "workspace:^",
+    "@office/app-sdk": "workspace:^",
+    "@office/authz": "workspace:^",
+    "@office/contracts": "workspace:^",
+    "@office/domain-kernel": "workspace:^"
+  }
+}

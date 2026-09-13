@@ -585,6 +585,24 @@ importers:
         specifier: workspace:^
         version: link:../../events
 
+  packages/marketplace:
+    dependencies:
+      '@office/app-runtime':
+        specifier: workspace:^
+        version: link:../app-runtime
+      '@office/app-sdk':
+        specifier: workspace:^
+        version: link:../app-sdk
+      '@office/authz':
+        specifier: workspace:^
+        version: link:../authz
+      '@office/contracts':
+        specifier: workspace:^
+        version: link:../contracts
+      '@office/domain-kernel':
+        specifier: workspace:^
+        version: link:../domain-kernel
+
   packages/persistence:
     dependencies:
       '@office/contracts':

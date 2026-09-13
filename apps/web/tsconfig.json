@@ -1,8 +1,10 @@
 {
-  // Placeholder TypeScript config for the Office web client (OFF-001).
-  // Extends the workspace base so editors already apply strict settings here.
-  // `src/` does not exist yet: application sources arrive with OFF-030.
-  // The root `tsconfig.json` spans workspace sources for `pnpm typecheck`.
+  // @office/web TypeScript config (OFF-030).
+  // Extends the workspace base; the root tsconfig spans apps/**/*.ts for
+  // `pnpm typecheck`, so this app is typecheck-gated without a build step
+  // (source package, no compilation — same convention as every Office
+  // package). The root vitest config already includes `apps/*/src/**/*.test.ts`.
+  "$schema": "https://json.schemastore.org/tsconfig",
   "extends": "../../tsconfig.base.json",
   "compilerOptions": {
     "noEmit": true

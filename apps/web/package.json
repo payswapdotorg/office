@@ -1,6 +1,34 @@
 {
   "name": "@office/web",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "private": true,
-  "description": "Placeholder for the Office web client. Intentionally ships no code, dependencies, or scripts — the web application arrives with work item OFF-030. See this package's README.md."
+  "type": "module",
+  "description": "Office web application shell (OFF-030): the primary web client's APPLICATION SHELL as a typed, deterministic VIEW-MODEL layer — project workspace composition, typed command surfaces, the control-tower surface, and evidence navigation over the event ledger. Pure TypeScript view models + command dispatch + navigation state over the landed contracts and in-memory reference engines: NO UI framework, NO DOM, NO rendering (the host wires rendering later), NO direct database access (structurally database-free: no @office/persistence import anywhere, no SQL, no repositories — verified by the boundary self-gate). Every view model is a deterministic projection of the seeded world's public package surfaces (run-twice identical); commands flow through the landed domain/workflow command surfaces and the @office/client-sync online session (typed Results, rejections become displayable view models, never throws); the control tower is the view over @office/intelligence-exceptions' ranked, evidence-chained portfolio exception set with suggested next actions displayed as SUGGESTIONS only; the A8 gateway is consumed TYPE-ONLY (the shell never constructs one).",
+  "sideEffects": false,
+  "main": "./src/index.ts",
+  "types": "./src/index.ts",
+  "exports": {
+    ".": "./src/index.ts",
+    "./package.json": "./package.json"
+  },
+  "dependencies": {
+    "@office/actions": "workspace:^",
+    "@office/authz": "workspace:^",
+    "@office/client-sync": "workspace:^",
+    "@office/contracts": "workspace:^",
+    "@office/domain-kernel": "workspace:^",
+    "@office/domain-contracts": "workspace:^",
+    "@office/domain-cost": "workspace:^",
+    "@office/domain-documents": "workspace:^",
+    "@office/domain-field": "workspace:^",
+    "@office/domain-organization": "workspace:^",
+    "@office/domain-projects": "workspace:^",
+    "@office/domain-schedule": "workspace:^",
+    "@office/events": "workspace:^",
+    "@office/intelligence-exceptions": "workspace:^",
+    "@office/intelligence-margin": "workspace:^",
+    "@office/intelligence-relationships": "workspace:^",
+    "@office/sync": "workspace:^",
+    "@office/workflows": "workspace:^"
+  }
 }

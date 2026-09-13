@@ -676,6 +676,30 @@ importers:
         specifier: workspace:^
         version: link:../memory
 
+  packages/intelligence/stack-analysis:
+    dependencies:
+      '@office/adapters-sdk':
+        specifier: workspace:^
+        version: link:../../adapters-sdk
+      '@office/app-sdk':
+        specifier: workspace:^
+        version: link:../../app-sdk
+      '@office/authz':
+        specifier: workspace:^
+        version: link:../../authz
+      '@office/contracts':
+        specifier: workspace:^
+        version: link:../../contracts
+      '@office/domain-kernel':
+        specifier: workspace:^
+        version: link:../../domain-kernel
+      '@office/intelligence-memory':
+        specifier: workspace:^
+        version: link:../memory
+      '@office/marketplace':
+        specifier: workspace:^
+        version: link:../../marketplace
+
   packages/marketplace:
     dependencies:
       '@office/app-runtime':

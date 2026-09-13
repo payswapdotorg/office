@@ -196,6 +196,24 @@ importers:
 
   apps/web: {}
 
+  packages/actions:
+    dependencies:
+      '@office/authz':
+        specifier: workspace:^
+        version: link:../authz
+      '@office/contracts':
+        specifier: workspace:^
+        version: link:../contracts
+      '@office/domain-kernel':
+        specifier: workspace:^
+        version: link:../domain-kernel
+      '@office/persistence':
+        specifier: workspace:^
+        version: link:../persistence
+      '@office/workflows':
+        specifier: workspace:^
+        version: link:../workflows
+
   packages/adapters-sdk:
     dependencies:
       '@office/authz':

@@ -1,0 +1,21 @@
+{
+  "name": "@office/actions",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Office action gateway (OFF-017): THE typed command execution chokepoint every consequential action (human, agent, app, adapter) passes through (freeze A8). ActionDescriptor registry with fail-closed four-class classification (read / reversible / approval-required / prohibited; unknown commands are prohibited by default), deny-by-default authorization + policy + A4 evidence/confidence gates BEFORE any handler invocation, idempotency-key deduplication (duplicate action keys return the original outcome with no duplicate effects and a duplicate-observed audit event), approval-required actions routed into the workflow/approval engine (never executed without the completed approval), and the gateway's own audit trail through the EventSink port. Depends only on @office/contracts, @office/domain-kernel, @office/authz, @office/persistence (the SqlExecutor type of the EventSink port), and @office/workflows (the approval engine the approval-required class routes into).",
+  "sideEffects": false,
+  "main": "./src/index.ts",
+  "types": "./src/index.ts",
+  "exports": {
+    ".": "./src/index.ts",
+    "./package.json": "./package.json"
+  },
+  "dependencies": {
+    "@office/authz": "workspace:^",
+    "@office/contracts": "workspace:^",
+    "@office/domain-kernel": "workspace:^",
+    "@office/persistence": "workspace:^",
+    "@office/workflows": "workspace:^"
+  }
+}

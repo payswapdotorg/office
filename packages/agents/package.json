@@ -1,0 +1,24 @@
+{
+  "name": "@office/agents",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Office agent runtime (OFF-018): evidence-grounded agent runs behind freeze A8's AI execution boundary. Agents NEVER write canonical state directly — every mutation a run proposes travels as a typed ProposedAction through the OFF-017 action gateway (executeAction, the only execution path), whose decision the run records verbatim; consequential (reversible / approval-required) recommendations REQUIRE a qualified, non-empty EvidenceSet and are typed-rejected BEFORE the gateway call; approval-required proposals record the pending approval handoff and complete only on resolution; every run emits its OWN DomainEventEnvelope audit trail (run started, evidence gathered, action proposed, gateway decision recorded, run completed) through the AgentEventSink port. Depends only on @office/actions (THE gateway + descriptor registry), @office/intelligence-relationships (traversal evidence retrieval), @office/intelligence-margin (assessment evidence identity), @office/intelligence-memory (memory evidence identity), @office/contracts (envelopes, Actor, parse helpers), @office/domain-kernel (Result/DomainError), @office/authz (deny-by-default scope coverage), and @office/persistence (the SqlExecutor type of the EventSink port signature). The model is an injected deterministic MOCK port — NO LLM/network call of any kind.",
+  "sideEffects": false,
+  "main": "./src/index.ts",
+  "types": "./src/index.ts",
+  "exports": {
+    ".": "./src/index.ts",
+    "./package.json": "./package.json"
+  },
+  "dependencies": {
+    "@office/actions": "workspace:^",
+    "@office/authz": "workspace:^",
+    "@office/contracts": "workspace:^",
+    "@office/domain-kernel": "workspace:^",
+    "@office/intelligence-margin": "workspace:^",
+    "@office/intelligence-memory": "workspace:^",
+    "@office/intelligence-relationships": "workspace:^",
+    "@office/persistence": "workspace:^"
+  }
+}

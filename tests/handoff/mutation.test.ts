@@ -130,37 +130,47 @@ describe('mutation probes — family 2: the computable ready queue', () => {
   });
 
   it('MUTATION: a Status line that disagrees with the recorded entries fails closed', () => {
-    const mutated = world.implementationStatus.replace('39/40 items done', '38/40 items done');
-    const violations = checkReadyQueue({ ...world, implementationStatus: mutated }, realFs);
-    expect(
-      namesViolation(violations, 'the Status line says 38 items done but 39 completion entries'),
-    ).toBe(true);
-  });
-
-  it('MUTATION: a recorded ready queue that disagrees with the computed one fails closed', () => {
+    // State-robust: whatever the tracker's current "N/NN items done" grammar
+    // says, decrementing N must disagree with the recorded completion entries.
+    const recorded = world.implementationStatus.match(/(\d+)\/(\d+) items done/);
+    expect(recorded).not.toBeNull();
+    const doneCount = recorded?.[1] ?? '0';
+    const totalCount = recorded?.[2] ?? '0';
     const mutated = world.implementationStatus.replace(
-      '`OFF-040` Successor',
-      '`OFF-099` Successor',
+      `${doneCount}/${totalCount} items done`,
+      `${Number.parseInt(doneCount, 10) - 1}/${totalCount} items done`,
     );
     const violations = checkReadyQueue({ ...world, implementationStatus: mutated }, realFs);
     expect(
       namesViolation(
         violations,
-        'the recorded ready queue [OFF-099] disagrees with the computed ready queue [OFF-040]',
+        `the Status line says ${Number.parseInt(doneCount, 10) - 1} items done but ${Number.parseInt(doneCount, 10)} completion entries`,
       ),
     ).toBe(true);
   });
 
-  it('MUTATION: a DONE item whose dependency is not DONE is a recorded-reality disagreement', () => {
-    const mutated = world.workItems.replace(
-      'Depends on: OFF-038 and all predecessor contracts',
-      'Depends on: OFF-040 and all predecessor contracts',
+  it('MUTATION: a recorded ready queue that disagrees with the computed one fails closed', () => {
+    // State-robust: injecting a ghost item into the recorded queue section
+    // must disagree with the computed queue in every tracker state.
+    const mutated = world.implementationStatus.replace(
+      '## Current ready queue',
+      '## Current ready queue\n\n- `OFF-099` Ghost item',
     );
+    const violations = checkReadyQueue({ ...world, implementationStatus: mutated }, realFs);
+    expect(
+      namesViolation(violations, 'the recorded ready queue [OFF-099] disagrees with the computed ready queue'),
+    ).toBe(true);
+  });
+
+  it('MUTATION: a DONE item whose dependency is not DONE is a recorded-reality disagreement', () => {
+    // State-robust: re-pointing the first item's dependency at a nonexistent
+    // id leaves a DONE item depending on something not DONE in every state.
+    const mutated = world.workItems.replace('Depends on: OFF-001', 'Depends on: OFF-099');
     const violations = checkReadyQueue({ ...world, workItems: mutated }, realFs);
     expect(
       namesViolation(
         violations,
-        'recorded-reality disagreement: DONE item OFF-039 depends on OFF-040, which is not DONE',
+        'recorded-reality disagreement: DONE item OFF-002 depends on OFF-099, which is not DONE',
       ),
     ).toBe(true);
   });

@@ -1,8 +1,17 @@
 # Office Implementation Status
 
-Status: production implementation STARTED — 37/40 items done (through OFF-037; PR #46). Remaining 3 — the serial tail: OFF-038 (036✅+037✅ — READY, dispatching now) → OFF-039 → OFF-040. Station verify (fresh-checkout gates on the pushed branch + post-merge main) remains the merge authority. Post-merge main: 271 files / 3530 tests, all five gates rc=0.
+Status: production implementation STARTED — 38/40 items done (through OFF-038; PR #47). Remaining 2 — the serial tail: OFF-039 (deps 038✅ + all predecessor contracts — READY, dispatching now) → OFF-040. Station verify (fresh-checkout gates on the pushed branch + post-merge main) remains the merge authority. Post-merge main: 277 files / 3584 tests, all five gates rc=0.
 
 ## Completed work items
+
+### OFF-038 Production readiness and operational runbook — DONE (2026-09-13)
+
+- Merge: squash-merged via PR #47 as `34ca753` on `main`.
+- Worker: local subagent (2 attempts; attempt 1 died to an infrastructure context deadline leaving packages/operations uncommitted — topology + drill mechanics written, catalog/tests/docs missing; attempt 2 inherited the tree and finished everything, catching THREE real inherited defects: a blind catalog cast replaced with fail-closed validated reads, an AppliedMigration/MigrationFile mistyping, and — surfaced by the drill's own first execution — an alphabetical dump order that violated `projects_tenant_id_fkey` on restore, fixed with a deterministic FK-topological dump order).
+- Acceptance evidence (station-verified on the pushed branch 18aecff by the Tech Lead): install 0; lint 0; typecheck 0; `pnpm test` **3584/3584** (277 files; operations: 54 tests incl. THE drill 8 + detect 10 + catalog + topology + compare + boundary); architecture 5/5; post-merge main re-verified identical (277 files / 3584 tests — exactly additive 3530 + 54).
+- Acceptance gates proven: **THE restore drill (the named acceptance)** — migrate (every file, in order) → re-migrate no-op with checksum verification → seed through the LANDED repositories → deterministic SQL backup (information_schema + FK-topological ordered INSERTs) → DESTROY via harness stop() → restore into a fresh scratch → content identity proven TWICE on independent re-dumps → two full drill runs produce byte-identical typed reports (deterministically repeatable); the migrations policy documented (forward-only, ordered, append-new-never-edit) AND verified on the drill's database. The failure-mode catalog: exactly the five critical modes (database-unavailability, migration-failure-mid-batch, adapter-provider-outage, ledger-append-failure, pool-exhaustion) each with a typed detection rule + documented operator action + escalation; the pure evaluation emits typed alerts — each rule fires on its fixture input and stays silent on the healthy view, stable alert identities, run-twice byte-identical, A12 typed rejections both directions (tenant-scoped catalog/detection). The typed deployment-topology artifact; README (policy + drill + topology + catalog + OFF-039/040 consumption) + package-internal RUNBOOK (per-mode operator actions, THE restore procedure, escalation policy).
+- Produced `@office/operations`. For OFF-039 (the conformance gate's operational surface) + OFF-040 (handoff verification's reproducible-setup story) consumption.
+- Review gates: ownership exact (packages/operations/** + the 27-line additive lockfile importer block); no direct pg dependency (flows through @office/persistence's harness); no network beyond the local embedded/scratch database; generic vocabulary only; frozen docs untouched.
 
 ### OFF-037 End-to-end construction reference scenario — DONE (2026-09-13)
 
@@ -335,8 +344,8 @@ Status: production implementation STARTED — 37/40 items done (through OFF-037;
 
 ## Current ready queue
 
-- `OFF-038` Production readiness and operational runbook (`packages/operations`; depends 036✅ + 037✅ — READY) — IN FLIGHT (worker dispatched; brief at office-ops/prompts/off-038.md).
-- Then: OFF-039 architecture conformance gate → OFF-040 successor handoff verification.
+- `OFF-039` Architecture conformance gate (deps 038✅ + all predecessor contracts — READY) — IN FLIGHT (worker dispatched; brief at office-ops/prompts/off-039.md).
+- Then: OFF-040 successor handoff verification (deps 039).
 
 ## Phase tracker issues
 

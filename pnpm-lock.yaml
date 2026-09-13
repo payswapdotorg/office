@@ -402,6 +402,21 @@ importers:
         specifier: ^8.23.0
         version: 8.23.0
 
+  packages/sync:
+    dependencies:
+      '@office/authz':
+        specifier: workspace:^
+        version: link:../authz
+      '@office/contracts':
+        specifier: workspace:^
+        version: link:../contracts
+      '@office/domain-kernel':
+        specifier: workspace:^
+        version: link:../domain-kernel
+      '@office/events':
+        specifier: workspace:^
+        version: link:../events
+
   packages/test-fixtures: {}
 
   packages/workflows:

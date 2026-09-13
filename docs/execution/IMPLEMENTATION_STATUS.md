@@ -1,8 +1,26 @@
 # Office Implementation Status
 
-Status: production implementation STARTED — 32/40 items done (through OFF-033). Remaining 8: OFF-034/035 (READY — dispatching with OFF-031), OFF-037 (unlocks when 034 lands), OFF-031/032 (leaf clients), then the serial tail OFF-038 → OFF-039 → OFF-040. NOTE: GitHub API/Actions degraded during the 030/033 landings — both merged via direct local merge of station-verified branches (PR #41 for OFF-030; direct merge d20e3c6 for OFF-033); CI to re-verify on main when the platform recovers.
+Status: production implementation STARTED — 34/40 items done (through OFF-031 and OFF-035). Remaining 6: OFF-034 (in flight — continuation after an infrastructure timeout) + OFF-032 (in flight — continuation after an infrastructure timeout), then OFF-037 (unlocks when 034 lands), then the serial tail OFF-038 → OFF-039 → OFF-040. NOTE: GitHub API/Actions intermittently degraded during the 030/033 landings — station verify (fresh-checkout gates) remains the merge authority; CI re-verifies on main when the platform recovers.
 
 ## Completed work items
+
+### OFF-031 Field/offline web client — DONE (2026-09-13)
+
+- Merge: squash-merged via PR #43 as `0c510cb` on `main`.
+- Worker: local subagent (2 attempts; attempt 1 lost to an infrastructure timeout after writing ~4.2K lines of apps/field; attempt 2 ran the never-run gates, fixed TWO real inherited source defects — the SQL-backed identity repositories replaced with the apps/web-mirrored in-memory twins, and the conflict resolution view re-projected from the engine's live queue — completed the 13-test boundary self-gate + README).
+- Acceptance evidence (worker-reported, station-verified gates): install 0; lint 0; typecheck 0; `pnpm test` **3238 tests / 251 files** (apps/field contributes 3 files / 23 tests: golden 4 + a12 6 + boundary 13); architecture 5/5.
+- Acceptance gates proven: THE golden offline scenario — two clients over one seeded field world → DISCONNECT → three offline captures (open/protected/open: queued, counted, displayable) → server-side divergence → RECONNECT + SYNCHRONIZE (exactly-once drain; the PROTECTED capture parked with structurally no auto-resolution; the OPEN resolution superseded deterministically) → both conflicts displayed with both sides + provenance + disposition → the typed EXPLICIT resolution re-enters the queue and applies exactly once → queue empty, board/field-event views reflect the reconciled state; run-twice byte-identity; A12 typed-rejected both directions with zero effects; A3 sync audit trail.
+- Produced `@office/field-client`. For OFF-032 (structural template) + OFF-037 consumption.
+- Review gates: ownership exact (apps/field/** + lockfile); ten-dep boundary self-gate; zero direct database access; no DOM/browser/service-worker vocabulary; frozen docs untouched.
+
+### OFF-035 Software-stack replacement analysis — DONE (2026-09-13)
+
+- Merge: squash-merged via PR #42 as `fe388f4` on `main`.
+- Worker: local subagent (2 attempts; attempt 1 lost to an infrastructure timeout after writing ~4.3K lines; attempt 2 ran the gates, fixed ONE real source defect — measureStackCoverage could emit duplicate provider references when a manifest declares one capability at two scope kinds or an adapter maps two object kinds to one capability; provider lists are now sets — wrote the five missing suites (coverage/replacement/authorization/audit/boundary = 99 of 120 tests) + README).
+- Acceptance evidence (worker-reported, station-verified gates): install 0; lint 0; typecheck 0; `pnpm test` **3335 tests / 254 files** (intelligence-stack-analysis: 6 files, 120 tests); architecture 5/5.
+- Acceptance gates proven: THE named acceptance — golden fixtures (over-covered / gap / partial-coverage external systems + two installed-app directions) produce typed ReplacementAssessment records whose scores are COMPUTED from observed coverage composition, recomputed BY HAND in the test and matching; the structural no-manual-score proof (a fed manual score is a typed unknown-field rejection at every input level); suggestion-only holds structurally; A12 both directions with the no-existence-oracle not-found; run-twice + shuffled byte-identical; A3 audit envelopes through the injected sink; seven-dep boundary self-gate.
+- Produced `@office/intelligence-stack-analysis`. For OFF-038 (app release gates) + OFF-040 (analytics) consumption.
+- Review gates: ownership exact (packages/intelligence/stack-analysis/** + lockfile); no network/LLM/SQL; frozen docs untouched.
 
 ### OFF-033 Revenue recovery engine — DONE (2026-09-13)
 
@@ -290,10 +308,9 @@ Status: production implementation STARTED — 32/40 items done (through OFF-033)
 
 ## Current ready queue
 
-- `OFF-034` Procurement optimization intelligence (`packages/intelligence/procurement`; depends 011✅ + 014✅ + 015✅ + 018✅) — IN FLIGHT.
-- `OFF-035` System replacement analysis (`packages/intelligence/stack-analysis`; depends 020✅ + 025✅ + 027✅ + 015✅) — IN FLIGHT.
-- `OFF-031` Field/offline web client (depends 029✅ + the landed OFF-030 shell) — IN FLIGHT.
-- NEXT: OFF-037 integration scenario (unblocks when 034 lands — 021/022/023/024/030/033 all ✅) + OFF-032 desktop shell (READY anytime; leaf). Then the serial tail: OFF-038 (036✅+037) → OFF-039 → OFF-040.
+- `OFF-034` Procurement optimization intelligence (`packages/intelligence/procurement`; depends 011✅ + 014✅ + 015✅ + 018✅) — IN FLIGHT (continuation worker dispatched; ~8K lines inherited uncommitted, missing boundary.test.ts + README.md, gates never run).
+- `OFF-032` Desktop client protocol/reference shell (`apps/desktop`; depends 002✅ + 025✅ + 028✅ + 029✅) — IN FLIGHT (continuation worker dispatched; ~3.8K lines inherited uncommitted, missing index.ts + all tests + README.md, gates never run).
+- NEXT: OFF-037 integration scenario (unblocks when 034 lands — 021/022/023/024/030/033 all ✅). Then the serial tail: OFF-038 (036✅+037) → OFF-039 → OFF-040.
 
 ## Phase tracker issues
 

@@ -1,8 +1,35 @@
 # Office Implementation Status
 
-Status: production implementation STARTED — 20/40 items done (OFF-001..OFF-017 + OFF-020 + OFF-028 + OFF-029). Next wave READY: OFF-018 (agent runtime) + OFF-019 (recommendation engine) + OFF-025 (app runtime) — dispatched in parallel; provider adapters 021-024 + OFF-031 queued behind them.
+Status: production implementation STARTED — 23/40 items done (OFF-001..OFF-019 + OFF-020 + OFF-025 + OFF-028 + OFF-029). Next wave READY: OFF-026 (app runtime) + OFF-021 + OFF-022 (provider adapters) — dispatched in parallel; the tail (OFF-036 → 038 → 039 → 040 and OFF-037) unblocks behind them.
 
 ## Completed work items
+
+### OFF-025 App SDK and manifest — DONE (2026-09-13)
+
+- Merge: PR #32 squash-merged as `9e57843` on `main` (one parallel-lockfile-conflict recovery: rebased onto post-018/019 main, lockfile regenerated, gates re-run green at b81f481, PR head force-with-lease updated — the Tech Lead's own branch, standard rebase update).
+- Worker: local subagent (2 attempts; attempt 2 fixed inherited parse-combinator defects + a VersionRange round-trip crash, wrote the sample app + the SDK README).
+- Acceptance evidence (station-verified fresh checkout): install --frozen-lockfile 0; lint 0; typecheck 0; `pnpm test` **2100/2100** (105 new in @office/app-sdk + 5 sample-app boundary tests); architecture 5/5.
+- Acceptance gates proven: invalid permissions/dependencies typed-rejected (full malformed-manifest matrix: bad capability, wildcard permission, unknown extension point, undeclared dependency, bad version); the sample app compiles against ONLY @office/app-sdk + @office/contracts (import graph proven by the boundary suite); A9 permission records explicit/versioned/revocable.
+- Produced `@office/app-sdk` + `apps/sample-app`: the AppManifest contract, A9 Permission lifecycle, command bindings, event subscriptions, the extension UI contract, fail-closed validation. For OFF-026 app runtime + OFF-035 marketplace consumption.
+- Review gates: ownership exact (packages/app-sdk/** + apps/sample-app/** + lockfile); no provider vocabulary; no secrets; frozen docs untouched.
+
+### OFF-019 Exception/control-tower engine — DONE (2026-09-13)
+
+- Merge: PR #31 squash-merged as `c063169` on `main`.
+- Worker: local subagent (2 attempts; attempt 2 fixed three inherited scenario defects (change-event aggregate shape, entitlement contract rebalance, rational reduction) and wrote the 115-test suite + README).
+- Acceptance evidence (station-verified fresh checkout): install --frozen-lockfile 0; lint 0; typecheck 0; `pnpm test` **2105/2105** (115 new in @office/intelligence-exceptions across 9 suites); architecture 5/5.
+- Acceptance gates proven: seeded golden scenarios produce STABLE priority ordering (identical across runs AND shuffled input orderings) with evidence chains resolving to producing source ids; exposed priority composition (severity + economic weights attributable to referenced assessment ids); suggestions-only NextActions (structurally no execution path); A12 both directions with authorization before scans; no AI/LLM/network (boundary test).
+- Produced `@office/intelligence-exceptions`: the Exception model, deterministic scan engine, stable ranking, NextAction contract, exception events. For OFF-030/033/035 consumption.
+- Review gates: ownership exact; intelligence peers + contracts/domain-kernel/authz only; no provider vocabulary; secrets scan clean.
+
+### OFF-018 Agent runtime — DONE (2026-09-13)
+
+- Merge: PR #30 squash-merged as `1032bc2` on `main`.
+- Worker: local subagent (attempt 1 wrote all source; attempt 2 wrote the 7-file test suite; the Tech Lead finished: 13 branded-literal test defects + 1 lint + README).
+- Acceptance evidence (station-verified fresh checkout): install --frozen-lockfile 0; lint 0; typecheck 0; `pnpm test` **2097/2097** (94 new in @office/agents); architecture 5/5.
+- Acceptance gates proven: an agent CANNOT mutate state except through OFF-017 (handler-invocation counting + boundary self-scan; no other write path exists); every consequential recommendation carries evidence (empty/unqualified EvidenceSet → typed rejection BEFORE the gateway call; executed proposals carry evidence refs into the audit trail); deterministic fixture-scripted mock model (run-twice identical); approval handoff (parked → explicit resolution re-enters the gateway, executes once; denied closes without mutation); A12 + deny-by-default actor-kind matrix; A3 audit envelopes.
+- Produced `@office/agents`: AgentRun, EvidenceSet, the Tool registry, ProposedAction, resolveApproval, execution records, the ModelPort + deterministic mock. For OFF-026/030/033/036 consumption.
+- Review gates: ownership exact; deps @office/actions + intelligence peers + contracts/domain-kernel/authz (+persistence type-only); NO domain/adapters/workflows/sync imports; no LLM/network; no provider vocabulary; secrets scan clean.
 
 ### OFF-029 Offline sync protocol — DONE (2026-09-13)
 

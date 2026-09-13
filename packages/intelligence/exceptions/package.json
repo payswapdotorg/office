@@ -1,0 +1,23 @@
+{
+  "name": "@office/intelligence-exceptions",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Office exception and control-tower engine (OFF-019): the portfolio control tower — deterministic detection of actionable exceptions over the intelligence peers' outputs (the relationship engine's authorization-filtered traversal subgraphs, the margin engine's ImpactAssessment values, the memory engine's outcome/benchmark facts), STABLE seeded prioritization with EXPOSED score composition (severity weight + economic weight over exact rationals, never a black box), evidence-chained severity and economic impact (every exception's evidence chain resolves to the producing source event/assessment/benchmark ids, freeze A4), and SUGGESTED next actions only (typed command references resolvable through the OFF-017 action gateway — the control tower never executes anything). Detection and ranking are pure deterministic typed computation: no AI/LLM/network calls of any kind, no clock, no randomness (injected scan identity + clock). Depends only on @office/contracts (envelopes, EntityRefs, CommandName), @office/domain-kernel (Result/DomainError), @office/authz (deny-by-default exception access), @office/events (LedgerEventId identity — read surface only), @office/intelligence-relationships (traversal subgraphs), @office/intelligence-margin (ImpactAssessment values), and @office/intelligence-memory (exact-rational arithmetic + benchmark facts).",
+  "sideEffects": false,
+  "main": "./src/index.ts",
+  "types": "./src/index.ts",
+  "exports": {
+    ".": "./src/index.ts",
+    "./package.json": "./package.json"
+  },
+  "dependencies": {
+    "@office/authz": "workspace:^",
+    "@office/contracts": "workspace:^",
+    "@office/domain-kernel": "workspace:^",
+    "@office/events": "workspace:^",
+    "@office/intelligence-margin": "workspace:^",
+    "@office/intelligence-memory": "workspace:^",
+    "@office/intelligence-relationships": "workspace:^"
+  }
+}

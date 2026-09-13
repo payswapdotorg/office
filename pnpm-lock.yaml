@@ -670,6 +670,30 @@ importers:
         specifier: workspace:^
         version: link:../relationships
 
+  packages/intelligence/procurement:
+    dependencies:
+      '@office/agents':
+        specifier: workspace:^
+        version: link:../../agents
+      '@office/authz':
+        specifier: workspace:^
+        version: link:../../authz
+      '@office/contracts':
+        specifier: workspace:^
+        version: link:../../contracts
+      '@office/domain-cost':
+        specifier: workspace:^
+        version: link:../../domain/cost
+      '@office/domain-kernel':
+        specifier: workspace:^
+        version: link:../../domain-kernel
+      '@office/intelligence-margin':
+        specifier: workspace:^
+        version: link:../margin
+      '@office/intelligence-memory':
+        specifier: workspace:^
+        version: link:../memory
+
   packages/intelligence/relationships:
     dependencies:
       '@office/authz':

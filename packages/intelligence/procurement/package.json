@@ -1,0 +1,23 @@
+{
+  "name": "@office/intelligence-procurement",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Office procurement optimization engine (OFF-034): evidence-backed vendor/procurement comparison over the cost domain's typed read surface (the canonical commitment/invoice model of @office/domain-cost, consumed through its derived reads only — never its transitions or commands) and the intelligence peers' outputs — the margin engine's ImpactAssessment values as the referenced projected economic impact basis (cited producing numbers, never re-derived) and the memory engine's OutcomeRecord/benchmark facts as the referenced historical basis. Every typed ProcurementRecommendation record (a vendor switch, an order split, or a lead-time-driven timing shift) carries the price/delivery/vendor-performance/risk VendorComparison it was detected over, the complete A4 evidence chain (cost-domain records + producing ledger events + assessments + outcomes + benchmarks, resolving end-to-end to producing source records) PLUS a qualified non-empty agents-typed EvidenceSet (empty/unqualified evidence is a typed rejection), a projected economic impact composed of typed components each CITED from a referenced commitment amount, a referenced assessment value, or a referenced alternative quote — exposed and hand-recomputable — and deterministic STABLE seeded ranking with EXPOSED exact-rational score composition. SUGGESTED next actions only: structurally NO path issues a command, mutates canonical state, or auto-commits a procurement decision — commitment without an explicit policy decision is a typed rejection and the only exit is a typed ProposedNextAction record. Comparison and ranking are pure deterministic typed computation: no AI/LLM/network calls of any kind, no clock, no randomness (injected scan identity + clock), audit envelopes (A3) emitted through an injected sink. Depends only on @office/contracts (envelopes, EntityRefs, CommandName), @office/domain-kernel (Result/DomainError), @office/authz (deny-by-default procurement access), @office/domain-cost (the canonical commitment/invoice model — derived read surface only), @office/agents (the EvidenceSet TYPE discipline — type-only), @office/intelligence-margin (ImpactAssessment values + AssessmentId/CurrencyCode), and @office/intelligence-memory (OutcomeRecord/Benchmark facts + the exact-Rational shape).",
+  "sideEffects": false,
+  "main": "./src/index.ts",
+  "types": "./src/index.ts",
+  "exports": {
+    ".": "./src/index.ts",
+    "./package.json": "./package.json"
+  },
+  "dependencies": {
+    "@office/agents": "workspace:^",
+    "@office/authz": "workspace:^",
+    "@office/contracts": "workspace:^",
+    "@office/domain-cost": "workspace:^",
+    "@office/domain-kernel": "workspace:^",
+    "@office/intelligence-margin": "workspace:^",
+    "@office/intelligence-memory": "workspace:^"
+  }
+}

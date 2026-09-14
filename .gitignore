@@ -4,6 +4,7 @@ node_modules/
 # Build output and incremental build state
 dist/
 build/
+.next/
 *.tsbuildinfo
 
 # Test and coverage artifacts

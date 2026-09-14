@@ -50,8 +50,45 @@ tenant scope there (freeze A12 end to end).
   production declaration (Stage 7) follows the database-backed smoke, not
   the bootstrap alone. `NODE_VERSION` is pinned as a project environment
   variable (`22`) for the `engines: node >=22` contract.
-- **Production URL / project id / deployment ids:** the record above;
-  later deployments append their ids here as they are promoted.
+- **Recorded hosting facts (Stage 7, at the production declaration):** the
+  production database is REAL — Neon, project `office-production` (id
+  `square-paper-16539172`, organization `org-shy-shadow-21570034`, region
+  `aws-us-east-2` co-located with the `iad1` functions, PostgreSQL 17). The
+  application connects through the **pooled endpoint** (PgBouncer, port
+  6543 — the serverless-compatible shape; the gateway's parameterized
+  queries are transaction-scoped unnamed statements, pooler-compatible —
+  the gateway runtime uses no session-scoped advisory locks), while the
+  migration/bootstrap operator run uses the **direct endpoint** (port 5432
+  — the migrator's advisory-locked dedicated sessions require it). Compute
+  autoscales 0.25–2 CU and suspends after idle (the free plan's behavior:
+  the first request after an idle suspend pays the compute cold start —
+  visible as a slow first `/api/health`, never a wrong answer). The
+  database was bootstrapped by the validated operator procedure before the
+  database-backed deployment landed: the ordered migration union applied
+  6/6 (`tenants` … `projects_lifecycle`), the canonical seed chain inserted
+  the hosted tenant → `Hosted Operator Organization` → `Hosted Campus
+  Works` through the REAL command paths, and the ledger + outbox rows were
+  verified in-database. The first database-backed production deployment is
+  `dpl_CEZA2TFDs11Wd1ghLe6hResgohYf` (READY, commit `e380b01`, promoted
+  2026-09-14, `DATABASE_URL` present at runtime): `/api/health` answers
+  200 `reachable` + 6 applied + `projects_lifecycle` + the release
+  identity, and the hosted smoke acceptance chain passed 23/23 against the
+  live production URL (readiness + release identity; every read surface
+  200; the malformed-envelope typed 400; the field-capture canonical
+  command executed end to end; the A8 approval-gated action
+  submit → propose → complete with `workflows.approvalApproved` landing in
+  the transactional ledger — the production ledger verified to hold the
+  bootstrap and smoke events). A client-bundle scan (the served page +
+  every JS chunk) found zero secret material (no connection strings, no
+  credentials, no key material).
+- **Production URL / project id / deployment ids:** the records above;
+  the promoted chain so far — `dpl_7mPoWXtUvpBwEfJ8p9e1PeYvNquo`
+  (commit `83f4011`, the pre-database bootstrap) → `dpl_Greqbz4Tyc3mgPz6agBQ2xFK4mF1`
+  (commit `e380b01`, the Git-connected auto-deploy, still pre-database) →
+  `dpl_CEZA2TFDs11Wd1ghLe6hResgohYf` (commit `e380b01`, the first
+  database-backed production deployment — **current**; the rollback target
+  is `dpl_Greqbz4Tyc3mgPz6agBQ2xFK4mF1`, READY). Later deployments append
+  their ids here as they are promoted.
 - **Environment classes** (all managed as Vercel environment variables,
   preview and production scoped):
   1. *public vars* — none required today (the host renders server-side; no
@@ -60,8 +97,11 @@ tenant scope there (freeze A12 end to end).
      routing is engine-internal.
   3. *adapter credentials* — none today (no adapter family is deployed).
   4. *database credentials* — `DATABASE_URL`, server-only, pointing at the
-     managed PostgreSQL database. It is read by the host's route layer
-     (never inside `@office/host-gateway`, never in any browser module).
+     managed PostgreSQL database (realized as an **encrypted** Vercel
+     environment variable, production + preview scoped — never a plain/
+     public variable, never in any browser module). It is read by the
+     host's route layer (never inside `@office/host-gateway`, never in
+     any browser module).
   5. *release identifiers* — `VERCEL_DEPLOYMENT_ID` (falling back to
      `RELEASE_ID`, then `local-dev`) surfaces in `/api/health` as the
      release identity.
@@ -151,7 +191,18 @@ production procedures (each re-validated against a fresh boot):
 
 1. **Application:** Vercel instant rollback to the previous deployment (the
    host + gateway functions return to the prior release; the release
-   identity in `/api/health` reflects it).
+   identity in `/api/health` reflects it). Two operator surfaces, the exact
+   procedure machine-verified against the live project: the dashboard's
+   *Instant Rollback* (Deployments → the target deployment → the rollback
+   action), or the alias-assignment API
+   (`POST /v2/deployments/{deploymentId}/aliases` with the production alias
+   `office-teal-zeta.vercel.app` — verified as a no-op re-assignment against
+   the current deployment, HTTP 200). Today's rollback target:
+   `dpl_Greqbz4Tyc3mgPz6agBQ2xFK4mF1` (READY). Environment variables are
+   runtime-injected project state: an application rollback returns the
+   prior CODE, not the prior environment — a rolled-back deployment still
+   sees the current `DATABASE_URL` (honest: the host answers with its own
+   code's behavior over the live canonical state).
 2. **Database:** the restore procedure of `packages/operations/RUNBOOK.md`
    ("THE restore procedure") — the drill's steps as the operator runbook:
    the latest deterministic backup, re-migrated forward-only from the
@@ -178,7 +229,12 @@ production procedures (each re-validated against a fresh boot):
 - **`/api/health`** (THE readiness endpoint): pool reachability, migration
   state (applied count + latest applied name), and the release identity —
   200 healthy, 503 when the database is unreachable.
-- **Vercel runtime logs** for request-level diagnostics.
+- **Vercel build/deployment event logs** are readable through the
+  deployments API (`/v1/deployments/{id}/events`) — verified against the
+  live deployment (the full build log: region, route table, build
+  durations, the stderr channel). Request-level runtime logs are the
+  dashboard's Logs surface (the runtime-logs API requires the log-drain
+  integration — recorded honestly: not configured today).
 - **The landed failure-mode catalog** (`@office/operations`) remains the ops
   reference: the detection rules and documented operator actions
   (`database-unavailability`, `migration-failure-mid-batch`, adapter

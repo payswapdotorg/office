@@ -403,7 +403,7 @@ handoff suite's family-4 grammar `### OFF-DEPLOY <title> — DONE
 
 ### OFF-DEPLOY Production deployment orchestration — DONE (2026-09-14)
 
-- Merge: PR pending — branch `off-deploy`; the squash-merge sha is recorded here at merge time by the Tech Lead.
+- Merge: PR #56 squash-merged as `5cad00d` on `main` (2026-09-14).
 - Produced: `apps/host` (the browser host over @office/web) + `packages/host-gateway` (the production gateway composition).
 - The hosted shape: the deployment topology record (docs/execution/DEPLOYMENT.md) landed first — the browser host renders @office/web's own view models (workspace / control tower / evidence) server-side over the composed runtime; the gateway owns every production concern (the pg pool over the caller-supplied connection string, the forward-only migrator over the ordered union of all six landed migration dirs, the canonical PG path with the transactional ledger + outbox, the REAL A8 action gateway with the approval-gated workflow decision); the host stays structurally database-free (the architecture gate enforces it for all apps/*).
 - Honest canonical-state boundary: real PostgreSQL is canonical for every landed PG surface (tenants, organizations, projects, the event ledger, the outbox); the richer domain surfaces compose through the packages' public deterministic reference engines (the reference-scenario discipline — the semantic reference for the hosted composition); no surface is duplicated across both.

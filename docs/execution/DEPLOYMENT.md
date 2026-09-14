@@ -36,9 +36,22 @@ tenant scope there (freeze A12 end to end).
   root `apps/host` (the app directory). Deploy flow: pull request → preview
   deployment → promote to production. Rollback is instant to the previous
   deployment (below).
-- **Production URL / project id / deployment ids:** recorded at promote time
-  by the Tech Lead (Stage 4/5 of the issue; this record deliberately does
-  not invent them).
+- **Recorded hosting facts (Stage 4, at promote time):** project `office`
+  (id `prj_hnyfiZljrASpOmH95twpQQaB5K8x`, personal team, Git-connected to
+  `payswapdotorg/office`, production branch `main`, framework preset
+  nextjs, root directory `apps/host`, region `iad1`); production alias
+  `office-teal-zeta.vercel.app`; bootstrap production deployment
+  `dpl_7mPoWXtUvpBwEfJ8p9e1PeYvNquo` (READY, commit `83f4011`, promoted
+  2026-09-14) — the audited tip of PR #56 plus the build-wiring and
+  build-output commits. The bootstrap deployed the code BEFORE the
+  database credentials landed: the host served the honest degradation
+  (`/api/health` 503 unreachable, the seeded reference world rendering,
+  typed rejections live) exactly as the boot rehearsal predicted; the
+  production declaration (Stage 7) follows the database-backed smoke, not
+  the bootstrap alone. `NODE_VERSION` is pinned as a project environment
+  variable (`22`) for the `engines: node >=22` contract.
+- **Production URL / project id / deployment ids:** the record above;
+  later deployments append their ids here as they are promoted.
 - **Environment classes** (all managed as Vercel environment variables,
   preview and production scoped):
   1. *public vars* — none required today (the host renders server-side; no
@@ -95,6 +108,44 @@ cluster-wide by the migrator's advisory lock (two booting instances queue
 instead of racing). See `packages/operations/RUNBOOK.md` ("Per-failure-mode
 operator actions: `migration-failure-mid-batch`") for the operator
 procedure on a partially applied batch.
+
+## Hosted composition operations (the validated operator procedures)
+
+The Stage-6 rehearsal over the embedded cluster validated the exact
+production procedures (each re-validated against a fresh boot):
+
+1. **Database bootstrap (migrate + canonical seed):** an operator script
+   composes the HostRuntime with `DATABASE_URL` and runs `migrate()`
+   (the ordered union applies 1–4 + 100 + 101; re-runs verify only), then
+   seeds the canonical chain through the REAL command paths —
+   `tenants.insert` → `organization.createOrganization` →
+   `projects.createProject` under the hosted identities — then reads
+   `health()` (reachable + 6 applied + `projects_lifecycle`). The
+   procedure is idempotent: re-runs answer typed already-exists /
+   recorded-outcome rejections and the health report stays green.
+2. **Hosted smoke (the acceptance chain):** `/api/health` 200 reachable
+   with the release identity; every read surface 200 (`/`,
+   `/control-tower`, `/evidence`, `/api/workspace`, `/api/ledger`); a
+   malformed command envelope answers the typed 400; the field-capture
+   command executes end to end (`field.fieldEventCaptured` with its
+   operation + event ids); the A8 approval-gated action runs
+   submit → propose → complete (the live approval must be SUBMITTED
+   before the decision — the workflow status guard; the complete returns
+   `workflows.approvalApproved` with the ledger audit).
+3. **The web session's operation slots (a request-scoped-transport
+   consequence, recorded honestly):** the online sync engine derives each
+   command's operation id from (subscription, observed cursor position,
+   operation kind); in this first deployment the transport is
+   request-scoped, so reads do not advance the session's cursor basis and
+   each command KIND has effectively one static slot per booted instance.
+   Behaviors an operator will see (all typed, none a throw): an identical
+   retry replays the recorded outcome; a DISTINCT payload on a slot that
+   already executed answers `idempotency-conflict`; a domain-REJECTED
+   submission still records its slot with its payload digest, so a
+   corrected retry answers `idempotency-conflict` on that instance (fresh
+   instances — the normal serverless recycle — offer fresh slots). The
+   push-based realtime transport extension point (below) is the designed
+   home of the advancing-cursor discipline.
 
 ## Rollback
 

@@ -391,3 +391,21 @@ Status: production implementation COMPLETE — 40/40 items done (through OFF-040
 `docs/execution/DEPENDENCY_GRAPH.md` defines readiness.
 `docs/execution/DEFINITION_OF_DONE.md` defines completion.
 `docs/execution/TECH_LEAD_HANDOFF.md` defines orchestration.
+
+## Post-freeze operations (the extension entry point in action)
+
+Post-freeze work extends the repository under the same governance without
+touching the frozen record above: the completion replay and the ready queue
+assert the terminal state of OFF-001…OFF-040 only; post-freeze records claim
+their primary footprints under the unambiguous-ownership invariant (the
+handoff suite's family-4 grammar `### OFF-DEPLOY <title> — DONE
+(YYYY-MM-DD)`, documented in tests/handoff/README.md).
+
+### OFF-DEPLOY Production deployment orchestration — DONE (2026-09-14)
+
+- Merge: PR pending — branch `off-deploy`; the squash-merge sha is recorded here at merge time by the Tech Lead.
+- Produced: `apps/host` (the browser host over @office/web) + `packages/host-gateway` (the production gateway composition).
+- The hosted shape: the deployment topology record (docs/execution/DEPLOYMENT.md) landed first — the browser host renders @office/web's own view models (workspace / control tower / evidence) server-side over the composed runtime; the gateway owns every production concern (the pg pool over the caller-supplied connection string, the forward-only migrator over the ordered union of all six landed migration dirs, the canonical PG path with the transactional ledger + outbox, the REAL A8 action gateway with the approval-gated workflow decision); the host stays structurally database-free (the architecture gate enforces it for all apps/*).
+- Honest canonical-state boundary: real PostgreSQL is canonical for every landed PG surface (tenants, organizations, projects, the event ledger, the outbox); the richer domain surfaces compose through the packages' public deterministic reference engines (the reference-scenario discipline — the semantic reference for the hosted composition); no surface is duplicated across both.
+- Acceptance evidence: the five gates green on the branch tip (frozen-lockfile install, lint, typecheck, the full test suite, the architecture conformance gate — exact counts in the PR); the gateway's embedded-harness integration chain (boot → migrate → seed → read → canonical command → ledger + outbox → evidence → A12 both directions) and the host's boundary self-gate both machine-verified.
+- Governance note: the handoff suite's ownership family grew the post-freeze grammar (this section) — the frozen 40/40 completion replay, the EMPTY ready queue, and the ownership table stay byte-stable; the unambiguous-ownership invariant now covers all 42 workspace manifests (40 frozen claims + this record's 2).

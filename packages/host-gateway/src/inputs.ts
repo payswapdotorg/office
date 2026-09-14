@@ -18,6 +18,8 @@ import type {
   SubmitWorkflowApprovalInput,
 } from '@office/web';
 import { parseCorrelationId, parseIdempotencyKey } from '@office/contracts';
+import { parseApprovalReference } from '@office/actions';
+import type { ApprovalReference } from '@office/actions';
 
 /** One typed rejection of an untrusted request input (displayable, strict). */
 export interface HostInputRejection {
@@ -272,6 +274,26 @@ export const parseUpdateProjectRequest = (raw: unknown): Parsed<UpdateProjectReq
       ...(idempotencyKey.value !== undefined ? { idempotencyKey: idempotencyKey.value } : {}),
       ...(correlationId.value !== undefined ? { correlationId: correlationId.value } : {}),
     },
+  };
+};
+
+/**
+ * Parse the approval reference a client posts back after the propose stage
+ * routed the approval-gated action (the reference is request-shaped untrusted
+ * input at the route boundary: strict keys, canonical EntityId instance id,
+ * kebab approval key — the LANDED parser's grammar, mapped into the host's
+ * typed rejection shape; never a cast, never a throw).
+ */
+export const parseApprovalReferenceInput = (raw: unknown): Parsed<ApprovalReference> => {
+  const parsed = parseApprovalReference(raw);
+  if (parsed.ok) return { ok: true, value: parsed.value };
+  const error = parsed.error;
+  return {
+    ok: false,
+    error: reject(
+      `approval${error.path ? `.${error.path}` : ''}`,
+      `expected ${error.expected}, received ${error.received}`,
+    ),
   };
 };
 

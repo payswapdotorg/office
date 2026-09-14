@@ -138,6 +138,27 @@ boundaries; every other workspace manifest is claimed by exactly one item.
 | OFF-039 | architecture governance | `tests/architecture` |
 | OFF-040 | tech-lead bootstrap | `tests/handoff` |
 
+## Post-freeze operations (the extension ownership record)
+
+The 40 frozen work items own the terminal architecture above. Post-freeze
+operations extend the repository under the same governance: each record lands
+in IMPLEMENTATION_STATUS.md under the strict grammar
+`### OFF-DEPLOY <title> — DONE (YYYY-MM-DD)` with exactly one `Produced:` line
+claiming its primary footprints. The parser treats it as a first-class
+ownership claim — fail-closed on malformed headings, unmapped names, missing
+paths, duplicate claims, or collisions with frozen footprints — while the
+completion replay deliberately ignores it (the frozen 40/40 record and its
+EMPTY ready queue stay byte-stable). The unambiguous-ownership invariant is
+EXTENDED, never weakened: every workspace manifest stays owned exactly once,
+by a frozen item or by a post-freeze record. The Merge line of a post-freeze
+record is merge-time documentation the Tech Lead completes when its PR lands
+(the frozen entries' merge-evidence invariant is terminal-state discipline
+and stays untouched).
+
+| Post-freeze record | Primary footprint |
+| --- | --- |
+| OFF-DEPLOY | `apps/host`, `packages/host-gateway` |
+
 ## Reproducible setup (the bootstrap)
 
 A fresh engineer brings the repository up from a clean checkout with exactly

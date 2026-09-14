@@ -1,0 +1,25 @@
+{
+  "name": "@office/host",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Office browser host (OFF-DEPLOY): THE browser-facing Next.js App Router application over the typed deployment topology — server components render @office/web's OWN view models (the project workspace sections, the control-tower exception set, the evidence ledger walkers) resolved through @office/host-gateway's composed HostRuntime, and thin API routes (/api/health, /api/workspace, /api/commands, /api/actions, /api/ledger) drive the gateway's typed read/command/action surfaces, returning the typed Result as JSON (a typed rejection is a 4xx body, never a thrown error; /api/health is THE readiness endpoint: 200 reachable, 503 unreachable). The host imports EXACTLY two workspace packages — @office/web (view-model types; TYPE-ONLY in client components, erased at compile time so the package's node:crypto dependency never enters the client bundle) and @office/host-gateway (the server composition; all SQL lives there) — so the app stays structurally database-free like every apps/* package (no @office/persistence import anywhere, no pg, no SQL; the boundary self-gate scans .ts AND .tsx). The HostRuntime boots lazily on the first request behind a server-only singleton (never at module top level, so the Next.js build phase never connects; DATABASE_URL is read at the route layer, never inside the gateway) with deterministic injected clock/id suppliers and the release identity from the deployment environment; client components post typed requests to the app's OWN API routes with relative URLs only.",
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint"
+  },
+  "dependencies": {
+    "@office/host-gateway": "workspace:^",
+    "@office/web": "workspace:^",
+    "next": "15.5.25",
+    "react": "19.3.0",
+    "react-dom": "19.3.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.20.0",
+    "@types/react": "^19.3.0",
+    "@types/react-dom": "^19.3.0"
+  }
+}

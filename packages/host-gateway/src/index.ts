@@ -74,6 +74,7 @@ export { LANDED_MIGRATION_DIRS } from './migrations';
 export {
   parseAdvanceWorkflowRequest,
   parseApprovalDecisionRequest,
+  parseApprovalReferenceInput,
   parseApproveWorkflowApprovalRequest,
   parseCaptureFieldObservationRequest,
   parseRecordCostItemRequest,

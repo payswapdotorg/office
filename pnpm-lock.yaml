@@ -643,6 +643,36 @@ importers:
         specifier: workspace:^
         version: link:../persistence
 
+  packages/host-gateway:
+    dependencies:
+      '@office/actions':
+        specifier: workspace:^
+        version: link:../actions
+      '@office/authz':
+        specifier: workspace:^
+        version: link:../authz
+      '@office/contracts':
+        specifier: workspace:^
+        version: link:../contracts
+      '@office/domain-kernel':
+        specifier: workspace:^
+        version: link:../domain-kernel
+      '@office/domain-organization':
+        specifier: workspace:^
+        version: link:../domain/organization
+      '@office/domain-projects':
+        specifier: workspace:^
+        version: link:../domain/projects
+      '@office/events':
+        specifier: workspace:^
+        version: link:../events
+      '@office/persistence':
+        specifier: workspace:^
+        version: link:../persistence
+      '@office/web':
+        specifier: workspace:^
+        version: link:../../apps/web
+
   packages/intelligence/exceptions:
     dependencies:
       '@office/authz':

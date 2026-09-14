@@ -1,0 +1,25 @@
+{
+  "name": "@office/host-gateway",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Office production gateway composition (OFF-DEPLOY): the server-side runtime behind the browser host — the pg pool over the caller-supplied connection string, the forward-only migrator over the ordered union of every landed migration directory (persistence foundation, events ledger + outbox, organization + project domains), the canonical PostgreSQL path (tenants/organizations/projects through the landed domain repositories and their own lifecycle command services, audit events appended to the real event ledger + outbox inside the same transaction), the @office/web session/view-model/command surface driven server-side over the deterministic seeded reference world (createWebSession + seedOfficeWorld + openWebDataPlane + projectWorkspace + controlTowerView + the evidence walkers, composed through @office/web's public root entry ONLY), and the REAL A8 action gateway (@office/actions createActionGateway) with the approval-gated workflow decision routed through the workflow-engine-backed approval authority — one composition, deterministic injected clock/id suppliers, typed Results everywhere, fail-closed parsing of every input. It is the ONLY workspace package apps/host may import besides @office/web: all SQL lives here (the host stays structurally database-free; the architecture gate enforces it).",
+  "sideEffects": false,
+  "main": "./src/index.ts",
+  "types": "./src/index.ts",
+  "exports": {
+    ".": "./src/index.ts",
+    "./package.json": "./package.json"
+  },
+  "dependencies": {
+    "@office/actions": "workspace:^",
+    "@office/authz": "workspace:^",
+    "@office/contracts": "workspace:^",
+    "@office/domain-kernel": "workspace:^",
+    "@office/domain-organization": "workspace:^",
+    "@office/domain-projects": "workspace:^",
+    "@office/events": "workspace:^",
+    "@office/persistence": "workspace:^",
+    "@office/web": "workspace:^"
+  }
+}

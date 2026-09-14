@@ -23,7 +23,7 @@ export default async function EvidencePage({ searchParams }: EvidencePageProps) 
   const event =
     eventParam === null ? null : runtime.reads.evidenceEvent(undefined, eventParam);
   const causality =
-    event !== null && event.ok
+    event !== null && event.ok && eventParam !== null
       ? runtime.reads.causalityChain(undefined, eventParam)
       : null;
 
@@ -102,7 +102,9 @@ export default async function EvidencePage({ searchParams }: EvidencePageProps) 
               <code>{event.value.correlationId}</code>, causation{' '}
               {event.value.causationId === null
                 ? 'root'
-                : `${event.value.causation.kind} ${event.value.causation.referenceId}`}
+                : event.value.causation.kind === 'root'
+                  ? 'root'
+                  : `${event.value.causation.kind} ${event.value.causation.referenceId}`}
               .
             </p>
             <h3>Payload (domain-validated at append)</h3>

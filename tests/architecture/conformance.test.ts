@@ -209,6 +209,60 @@ describe('mutation probes — check 1: forbidden imports', () => {
     expect(unreadable.length).toBe(1);
     expect(unreadable[0]?.file).toBe('packages/nameless/package.json');
   });
+
+  // OFF-DEPLOY: the .tsx extension probes — the browser host's JSX modules
+  // are gated exactly like TypeScript modules (check 1 scans .ts AND .tsx).
+  it('HEALTHY CONTROL: a browser-host-shaped .tsx tree yields zero violations', () => {
+    expect(
+      checkForbiddenImports([
+        manifest('apps/synthhost', '@office/synthhost', [
+          'next',
+          'react',
+          'react-dom',
+          '@office/web',
+          '@office/host-gateway',
+        ]),
+        file(
+          'apps/synthhost/src/app/page.tsx',
+          [
+            "import type { ProjectWorkspaceView } from '@office/web';",
+            "import { getHostRuntime } from '@office/host-gateway';",
+            'export default async function Page() {',
+            '  const value: ProjectWorkspaceView | null = null;',
+            '  return <main>{JSON.stringify(value)}</main>;',
+            '}',
+          ].join('\n'),
+        ),
+      ]),
+    ).toStrictEqual([]);
+  });
+
+  it('MUTATION: a .tsx module importing persistence fails closed (JSX is not an exemption)', () => {
+    const violations = checkForbiddenImports([
+      manifest('apps/synthhost', '@office/synthhost', ['react', '@office/persistence']),
+      file(
+        'apps/synthhost/src/app/page.tsx',
+        "import { Pool } from '@office/persistence';\nexport default function Page() { return <div>{String(Pool)}</div>; }\n",
+      ),
+    ]);
+    const layering = violationsOf(violations, 'clients-never-import-persistence');
+    expect(layering.length).toBe(1);
+    expect(layering[0]?.file).toBe('apps/synthhost/src/app/page.tsx');
+  });
+
+  it('MUTATION: an undeclared import inside a .tsx module fails closed naming file + import', () => {
+    const violations = checkForbiddenImports([
+      manifest('apps/synthhost', '@office/synthhost', ['react']),
+      file(
+        'apps/synthhost/src/components/thing.tsx',
+        "import { helper } from '@office/other';\nexport const Thing = () => <div>{String(helper)}</div>;\n",
+      ),
+    ]);
+    const undeclared = violationsOf(violations, 'undeclared-workspace-dependency');
+    expect(undeclared.length).toBe(1);
+    expect(undeclared[0]?.file).toBe('apps/synthhost/src/components/thing.tsx');
+    expect(undeclared[0]?.detail).toContain("'@office/other'");
+  });
 });
 
 // ---------------------------------------------------------------------------
@@ -270,6 +324,32 @@ describe('mutation probes — check 2: provider leakage', () => {
     expect(violations.length).toBe(1);
     expect(violations[0]?.rule).toBe('provider-name-leakage');
     expect(violations[0]?.file).toBe('packages/synth/src/vocabulary.ts');
+  });
+
+  // OFF-DEPLOY: the .tsx extension probe — JSX modules leak vendor names
+  // exactly as reliably as TypeScript modules (check 2 scans .ts AND .tsx).
+  it('MUTATION: a real provider name inside a .tsx module fails closed naming file + name', () => {
+    const violations = checkProviderLeakage([
+      file(
+        'apps/synthhost/src/components/sync-status.tsx',
+        `export const SyncLabel = () => <span>${leakedName} sync</span>;\n`,
+      ),
+    ]);
+    expect(violations.length).toBe(1);
+    expect(violations[0]?.rule).toBe('provider-name-leakage');
+    expect(violations[0]?.file).toBe('apps/synthhost/src/components/sync-status.tsx');
+    expect(violations[0]?.detail).toContain(leakedName);
+  });
+
+  it('HEALTHY CONTROL: generic vocabulary inside a .tsx module is clean', () => {
+    expect(
+      checkProviderLeakage([
+        file(
+          'apps/synthhost/src/components/status.tsx',
+          'export const Status = () => <span role="status">provider: connected</span>;\n',
+        ),
+      ]),
+    ).toStrictEqual([]);
   });
 });
 

@@ -9,9 +9,9 @@
 // composition). The interactive pieces are the two client components at the
 // bottom of the page: the field-capture command form and the A8
 // approval-gated action flow, both receiving view-model JSON as props.
-import { ApprovalFlow } from '../../components/approval-flow';
-import { FieldCaptureForm } from '../../components/field-capture-form';
-import { getHostRuntime } from '../../server/runtime';
+import { ApprovalFlow } from '../components/approval-flow';
+import { FieldCaptureForm } from '../components/field-capture-form';
+import { getHostRuntime } from '../server/runtime';
 
 export const dynamic = 'force-dynamic';
 

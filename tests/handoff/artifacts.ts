@@ -87,6 +87,25 @@ export interface CompletionEntry {
   readonly producedLine: string | undefined;
 }
 
+/**
+ * One post-freeze operations record parsed from docs/execution/
+ * IMPLEMENTATION_STATUS.md (OFF-DEPLOY): the sanctioned extension grammar
+ * `### OFF-DEPLOY <title> — DONE (YYYY-MM-DD)`. Post-freeze records claim
+ * primary footprints under the SAME unambiguous-ownership discipline as the
+ * frozen items (exactly one Produced line, real manifest paths, no collision
+ * with any frozen claim) while staying invisible to the completion replay —
+ * the frozen 40/40 record and its EMPTY ready queue are terminal-state
+ * assertions about OFF-001..OFF-040, not about post-freeze work. The Merge
+ * line is documentation completed at merge time (the Tech Lead's closure
+ * protocol); the frozen entries' merge-evidence invariant stays untouched.
+ */
+export interface PostFreezeEntry {
+  readonly id: string;
+  readonly title: string;
+  readonly date: string;
+  readonly producedLine: string | undefined;
+}
+
 /** The repository artifacts every checker consumes (raw text). */
 export interface HandoffArtifacts {
   readonly workItems: string;
@@ -235,6 +254,8 @@ const fieldNames = ['Owner boundary', 'Depends on', 'Produces', 'Acceptance'] as
 export interface ParsedExecution {
   readonly items: readonly WorkItem[];
   readonly entries: readonly CompletionEntry[];
+  /** Post-freeze operations records (OFF-DEPLOY) — ownership claims only. */
+  readonly postFreeze: readonly PostFreezeEntry[];
   /** Grammar problems: malformed fields/headings — fail every markdown family. */
   readonly problems: readonly HandoffViolation[];
 }
@@ -300,6 +321,7 @@ export function parseExecutionArtifacts(
 
   // --- IMPLEMENTATION_STATUS.md -------------------------------------------
   const entries: CompletionEntry[] = [];
+  const postFreezeEntries: PostFreezeEntry[] = [];
   const statusLines = world.implementationStatus.split('\n');
   let entry: {
     id: string;
@@ -308,6 +330,29 @@ export function parseExecutionArtifacts(
     merge: string[];
     produced: string[];
   } | undefined;
+  let postFreeze: {
+    id: string;
+    title: string;
+    date: string;
+    produced: string[];
+  } | undefined;
+  const finishPostFreeze = (): void => {
+    if (postFreeze === undefined) return;
+    if (postFreeze.produced.length !== 1) {
+      problems.push({
+        family: 'artifact-parse',
+        file: STATUS_FILE,
+        expectation: `post-freeze entry ${postFreeze.id} carries ${postFreeze.produced.length} "- Produced" lines (exactly one allowed)`,
+      });
+    }
+    postFreezeEntries.push({
+      id: postFreeze.id,
+      title: postFreeze.title,
+      date: postFreeze.date,
+      producedLine: postFreeze.produced[0],
+    });
+    postFreeze = undefined;
+  };
   const finishEntry = (): void => {
     if (entry === undefined) return;
     const mergeLine = entry.merge[0];
@@ -352,6 +397,7 @@ export function parseExecutionArtifacts(
     const doneHeading = rawLine.match(/^### (OFF-\d{3}) (.+?) — DONE \((\d{4}-\d{2}-\d{2})\)$/);
     if (doneHeading !== null) {
       finishEntry();
+      finishPostFreeze();
       const id = doneHeading[1];
       const title = doneHeading[2];
       const date = doneHeading[3];
@@ -366,9 +412,42 @@ export function parseExecutionArtifacts(
       entry = { id, title, date, merge: [], produced: [] };
       continue;
     }
+    // Post-freeze operations records (OFF-DEPLOY): the sanctioned extension
+    // grammar — claims ownership, stays invisible to the completion replay.
+    const postFreezeHeading = rawLine.match(
+      /^### (OFF-DEPLOY) (.+?) — DONE \((\d{4}-\d{2}-\d{2})\)$/,
+    );
+    if (postFreezeHeading !== null) {
+      finishEntry();
+      finishPostFreeze();
+      const title = postFreezeHeading[2];
+      const date = postFreezeHeading[3];
+      if (title === undefined || date === undefined) {
+        problems.push({
+          family: 'artifact-parse',
+          file: STATUS_FILE,
+          expectation: `unparseable post-freeze heading: "${rawLine}"`,
+        });
+        continue;
+      }
+      postFreeze = { id: 'OFF-DEPLOY', title, date, produced: [] };
+      continue;
+    }
+    const anyPostFreezeHeading = rawLine.match(/^### OFF-DEPLOY/);
+    if (anyPostFreezeHeading !== null) {
+      finishEntry();
+      finishPostFreeze();
+      problems.push({
+        family: 'artifact-parse',
+        file: STATUS_FILE,
+        expectation: `post-freeze heading not in the "### OFF-DEPLOY <title> — DONE (YYYY-MM-DD)" grammar: "${rawLine.trim()}"`,
+      });
+      continue;
+    }
     const anyItemHeading = rawLine.match(/^### (OFF-\d{3})/);
     if (anyItemHeading !== null) {
       finishEntry();
+      finishPostFreeze();
       problems.push({
         family: 'artifact-parse',
         file: STATUS_FILE,
@@ -378,17 +457,27 @@ export function parseExecutionArtifacts(
     }
     if (rawLine.trim().startsWith('#')) {
       finishEntry();
+      finishPostFreeze();
       continue;
     }
-    if (entry === undefined) continue;
+    if (entry === undefined) {
+      // Inside a post-freeze record: only the Produced line is claimed (the
+      // Merge line is merge-time documentation the Tech Lead completes).
+      if (postFreeze !== undefined) {
+        const produced = rawLine.match(/^- Produced\b.*$/);
+        if (produced !== null) postFreeze.produced.push(rawLine);
+      }
+      continue;
+    }
     const merge = rawLine.match(/^- Merge: (.+)$/);
     if (merge !== null && merge[1] !== undefined) entry.merge.push(merge[1]);
     const produced = rawLine.match(/^- Produced\b.*$/);
     if (produced !== null) entry.produced.push(rawLine);
   }
   finishEntry();
+  finishPostFreeze();
 
-  return { items, entries, problems };
+  return { items, entries, postFreeze: postFreezeEntries, problems };
 }
 
 /** Validate one parsed item block's field multiplicities + dependency grammar. */
@@ -1159,6 +1248,68 @@ export function checkOwnership(
             expectation: `${entry.id}'s owner boundary names ${boundaryPath} but its Produced line does not declare that footprint`,
           });
         }
+      }
+    }
+  }
+
+  // Post-freeze operations records (OFF-DEPLOY) extend ownership under the
+  // SAME unambiguous discipline: every claim maps to a real manifest path,
+  // exists in the repository, collides with no frozen (or other post-freeze)
+  // claim, and is documented in the successor README's post-freeze section.
+  // The invariant is EXTENDED, never weakened: a repository with post-freeze
+  // work owns MORE manifests, each still exactly once.
+  const postFreezeSection = sectionText(
+    world.handoffReadme,
+    '## Post-freeze operations (the extension ownership record)',
+  );
+  if (parsed.postFreeze.length > 0 && postFreezeSection === undefined) {
+    violations.push({
+      family: 'ownership',
+      file: 'tests/handoff/README.md',
+      expectation:
+        'post-freeze entries exist but the "## Post-freeze operations (the extension ownership record)" section documenting their claims is missing',
+    });
+  }
+  for (const pfEntry of parsed.postFreeze) {
+    const { footprints, unmapped } = producedFootprints(pfEntry.producedLine, manifestNames);
+    for (const name of unmapped) {
+      violations.push({
+        family: 'ownership',
+        file: STATUS_FILE,
+        expectation: `post-freeze entry ${pfEntry.id} declares produced package "${name}", which no workspace manifest carries`,
+      });
+    }
+    if (footprints.length === 0) {
+      violations.push({
+        family: 'ownership',
+        file: STATUS_FILE,
+        expectation: `post-freeze entry ${pfEntry.id} has a Produced line naming no primary package/app path`,
+      });
+    }
+    for (const footprint of footprints) {
+      if (!fs.exists(footprint)) {
+        violations.push({
+          family: 'ownership',
+          file: STATUS_FILE,
+          expectation: `post-freeze entry ${pfEntry.id} declares produced path ${footprint}, which does not exist in the repository`,
+        });
+      }
+      const other = claimedBy.get(footprint);
+      if (other !== undefined) {
+        violations.push({
+          family: 'ownership',
+          file: STATUS_FILE,
+          expectation: `ambiguous ownership: ${other} and the post-freeze entry ${pfEntry.id} both claim the primary footprint ${footprint}`,
+        });
+      } else {
+        claimedBy.set(footprint, pfEntry.id);
+      }
+      if (postFreezeSection !== undefined && !postFreezeSection.includes(`\`${footprint}\``)) {
+        violations.push({
+          family: 'ownership',
+          file: 'tests/handoff/README.md',
+          expectation: `the post-freeze operations section must document ${pfEntry.id}'s primary footprint ${footprint} (backticked path)`,
+        });
       }
     }
   }

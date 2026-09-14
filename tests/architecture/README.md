@@ -202,6 +202,32 @@ failure — this rule fails closed on its own inputs.
 'session-baseline-unparseable'`, naming both sides (the registry file and/or
 the offending client file) in every case.
 
+## The .tsx coverage (OFF-DEPLOY)
+
+The gate scans `.ts` AND `.tsx` source files — the browser host
+(`apps/host`) ships JSX modules, and a JSX module can smuggle a forbidden
+import or leak a vendor name exactly as reliably as a TypeScript module:
+
+- `loadRepoTree()` collects `.tsx` files like `.ts` files (one shared pass);
+- **Check 1 (forbidden imports)** scans `.tsx` modules with the same
+  allowed-forms and layering rules — a `.tsx` importing `@office/persistence`
+  fails `clients-never-import-persistence` exactly as a `.ts` would;
+- **Check 2 (provider leakage)** scans `.tsx` content with the same
+  vocabulary and comment-stripping discipline.
+- Checks 3/4/5 (agent DB access, scoped queries, app permissions) keep their
+  `.ts`-only filters **by design**: their domains — the agent/intelligence
+  families, the persistence-facing packages, the three permission-declaring
+  clients — carry no `.tsx`, and the browser host owns no capability surface
+  of its own (it drives the composed session through the gateway). Each
+  filter carries the note inline.
+- The root `tsconfig.json` includes `apps/**/*.tsx` with `jsx: react-jsx` +
+  the DOM libs (an additive widening — every pre-existing include and strict
+  flag untouched; `.tsx` exists only inside `apps/host`).
+- The mutation probes cover the extension explicitly: a browser-host-shaped
+  healthy `.tsx` tree passes clean; a `.tsx` importing persistence, an
+  undeclared import inside a `.tsx`, and a leaked provider name in JSX all
+  fail closed naming the `.tsx` file.
+
 ## Mutation probes — a rule that cannot be shown to fail is not a gate
 
 `conformance.test.ts` feeds SYNTHETIC in-memory `RepoFile[]` fixture maps

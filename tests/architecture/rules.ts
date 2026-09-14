@@ -58,12 +58,16 @@ export const repoRoot = resolve(dirname(fileURLToPath(import.meta.url)), '..', '
 let cachedTree: readonly RepoFile[] | undefined;
 
 /**
- * ONE deterministic pass over the tree: every `.ts` file and every
- * `package.json` under `packages/`, `apps/`, and `tests/`, read once, sorted
- * by path. Directory walks skip `node_modules`/`dist`/`build`/`coverage` and
- * never follow symlinks (pnpm links packages there). Fail-closed: an
- * unreadable directory or file THROWS (the gate fails, never skips).
- * Memoized: every check shares the same pass.
+ * ONE deterministic pass over the tree: every `.ts` and `.tsx` file and
+ * every `package.json` under `packages/`, `apps/`, and `tests/`, read once,
+ * sorted by path. Directory walks skip `node_modules`/`dist`/`build`/
+ * `coverage` and never follow symlinks (pnpm links packages there).
+ * Fail-closed: an unreadable directory or file THROWS (the gate fails, never
+ * skips). Memoized: every check shares the same pass. The `.tsx` coverage
+ * (OFF-DEPLOY) exists because the browser host's JSX modules are gated like
+ * every other source; the checks whose domains carry no `.tsx` (agent DB
+ * access, scoped queries, app permissions) keep their `.ts`-only filters by
+ * design — noted at each filter.
  */
 export function loadRepoTree(): readonly RepoFile[] {
   if (cachedTree !== undefined) return cachedTree;
@@ -88,7 +92,10 @@ export function loadRepoTree(): readonly RepoFile[] {
       const full = join(dir, entry.name);
       if (entry.isDirectory()) {
         walk(full);
-      } else if (entry.isFile() && (entry.name.endsWith('.ts') || entry.name === 'package.json')) {
+      } else if (
+        entry.isFile() &&
+        (entry.name.endsWith('.ts') || entry.name.endsWith('.tsx') || entry.name === 'package.json')
+      ) {
         let text: string;
         try {
           text = readFileSync(full, 'utf8');
@@ -300,18 +307,19 @@ const SANCTIONED_DYNAMIC_IMPORTS: readonly { readonly specifier: string; readonl
 
 /**
  * Check 1: the global cross-package import-boundary scan over every
- * `packages/*` and `apps/*` source file. Allowed forms: relative imports,
- * `node:` builtins, the package's OWN declared dependencies (from its
- * package.json dependencies block), `vitest` in `*.test.ts` files only, and
- * the enumerated sanctioned dynamic imports. Declared imports must still
- * satisfy the frozen layering rules. Everything else fails closed with the
- * offending file + import + violated rule.
+ * `packages/*` and `apps/*` source file — `.ts` AND `.tsx` (OFF-DEPLOY: the
+ * browser host's JSX modules are gated like every other source). Allowed
+ * forms: relative imports, `node:` builtins, the package's OWN declared
+ * dependencies (from its package.json dependencies block), `vitest` in
+ * `*.test.ts` files only, and the enumerated sanctioned dynamic imports.
+ * Declared imports must still satisfy the frozen layering rules. Everything
+ * else fails closed with the offending file + import + violated rule.
  */
 export function checkForbiddenImports(files: readonly RepoFile[]): readonly Violation[] {
   const { packages, violations } = discoverPackages(files);
   const violationsOut: Violation[] = [...violations];
   for (const file of files) {
-    if (!file.path.endsWith('.ts')) continue;
+    if (!file.path.endsWith('.ts') && !file.path.endsWith('.tsx')) continue;
     if (!file.path.startsWith('packages/') && !file.path.startsWith('apps/')) continue;
     if (!file.path.includes('/src/')) continue;
     const pkg = owningPackage(packages, file.path);
@@ -437,14 +445,15 @@ const PROVIDER_LEAKAGE_EXCEPTIONS: readonly RegExp[] = [
 
 /**
  * Check 2: the repo-wide vocabulary scan for real provider/vendor/cloud
- * names across every source file in the map (comment-stripped). Any
- * occurrence outside the sanctioned exceptions fails closed naming the file
- * and the leaked name.
+ * names across every source file in the map (comment-stripped) — `.ts` AND
+ * `.tsx` (OFF-DEPLOY: JSX modules leak vendor names exactly as reliably as
+ * TypeScript modules). Any occurrence outside the sanctioned exceptions
+ * fails closed naming the file and the leaked name.
  */
 export function checkProviderLeakage(files: readonly RepoFile[]): readonly Violation[] {
   const violations: Violation[] = [];
   for (const file of files) {
-    if (!file.path.endsWith('.ts')) continue;
+    if (!file.path.endsWith('.ts') && !file.path.endsWith('.tsx')) continue;
     if (PROVIDER_LEAKAGE_EXCEPTIONS.some((exception) => exception.test(file.path))) continue;
     const text = stripComments(file.text);
     const found = new Set<string>();
@@ -490,6 +499,8 @@ const SQL_SURFACE_PATTERN =
 export function checkAgentDbAccess(files: readonly RepoFile[]): readonly Violation[] {
   const violations: Violation[] = [];
   for (const file of files) {
+    // `.ts` only by design: the agent/intelligence families carry no `.tsx`
+    // (the browser host is the only JSX surface — check 1 gates its imports).
     if (!file.path.endsWith('.ts')) continue;
     if (!isAgentFamilyFile(file.path)) continue;
     const text = stripComments(file.text);
@@ -667,6 +678,9 @@ export function checkScopedQueries(files: readonly RepoFile[]): readonly Violati
   ].sort();
   const globalInterfaces = new Map<string, InterfaceInfo>();
   for (const file of files) {
+    // `.ts` only by design: the persistence-facing packages carry no `.tsx`
+    // (SQL-executing exports are TypeScript surfaces; the host's JSX modules
+    // hold no SQL by the boundary discipline check 1 enforces).
     if (!file.path.endsWith('.ts')) continue;
     for (const info of interfacesOf(file.text)) {
       if (!globalInterfaces.has(info.name)) globalInterfaces.set(info.name, info);
@@ -837,6 +851,10 @@ export function checkAppPermissions(files: readonly RepoFile[]): readonly Violat
   }
 
   for (const client of CONFORMANCE_CLIENTS) {
+    // `.ts` only by design: the three landed clients are pure view-model
+    // packages with no `.tsx`; the browser host (apps/host) is NOT a client
+    // in this check's sense — it owns no capability surface of its own, it
+    // drives the composed session through the gateway.
     const clientSrc = files.filter(
       (file) => file.path.startsWith(`apps/${client}/src/`) && file.path.endsWith('.ts'),
     );

@@ -9,15 +9,25 @@
   // same strict settings. When apps/web gains real sources (OFF-030), this
   // root may be restructured into a solution-style `references` config if
   // per-package build boundaries need it.
+  //
+  // OFF-DEPLOY (additive widening): the browser host (apps/host) ships JSX
+  // modules (.tsx), so the root project now includes `apps/**/*.tsx` and
+  // carries `jsx: react-jsx` + the DOM libs those modules type against. The
+  // widening is purely additive — every pre-existing include and strict flag
+  // is untouched; .tsx exists only inside apps/host (the single sanctioned
+  // JSX surface; the architecture gate scans .ts and .tsx alike).
   "$schema": "https://json.schemastore.org/tsconfig",
   "extends": "./tsconfig.base.json",
   "compilerOptions": {
-    "noEmit": true
+    "noEmit": true,
+    "jsx": "react-jsx",
+    "lib": ["ES2022", "DOM", "DOM.Iterable"]
   },
   "include": [
     "vitest.config.ts",
     "tests/**/*.ts",
     "apps/**/*.ts",
+    "apps/**/*.tsx",
     "packages/**/*.ts"
   ],
   "exclude": ["**/node_modules", "**/dist"]

@@ -148,8 +148,11 @@ describe('unambiguous ownership (OFF-040 family 4)', () => {
 
   it('claims every workspace manifest exactly once besides the documented shared exception', () => {
     const manifests = realFs.manifests();
-    expect(manifests.length).toBe(40);
-    expect(new Set(manifests.map((manifest) => manifest.name)).size).toBe(40);
+    // 40 frozen claims + the post-freeze OFF-DEPLOY record's 2 (apps/host,
+    // packages/host-gateway) — the unambiguous-ownership invariant EXTENDED
+    // by the post-freeze operations grammar, never weakened.
+    expect(manifests.length).toBe(42);
+    expect(new Set(manifests.map((manifest) => manifest.name)).size).toBe(42);
     const manifestNames = new Map(manifests.map((manifest) => [manifest.name, manifest.path]));
     const claimed = new Map<string, string>();
     for (const entry of entries) {
@@ -158,10 +161,41 @@ describe('unambiguous ownership (OFF-040 family 4)', () => {
         claimed.set(footprint, entry.id);
       }
     }
+    for (const pfEntry of parsed.postFreeze) {
+      for (const footprint of producedFootprints(pfEntry.producedLine, manifestNames).footprints) {
+        expect(claimed.has(footprint), `${footprint} claimed twice (post-freeze)`).toBe(false);
+        claimed.set(footprint, pfEntry.id);
+      }
+    }
     const unclaimed = manifests
       .map((manifest) => manifest.path)
       .filter((path) => !claimed.has(path) && path !== 'packages/test-fixtures');
     expect(unclaimed).toEqual([]);
+  });
+
+  it('extends ownership through the post-freeze record without touching the frozen claims', () => {
+    // The post-freeze operations grammar: exactly one OFF-DEPLOY record today,
+    // claiming exactly the deployment's two manifests, colliding with no
+    // frozen footprint — the completion replay never sees it.
+    expect(parsed.postFreeze.length).toBe(1);
+    const record = parsed.postFreeze[0];
+    if (record === undefined) throw new Error('probe fixture is missing the post-freeze record');
+    expect(record.id).toBe('OFF-DEPLOY');
+    expect(record.title).toBe('Production deployment orchestration');
+    expect(record.date).toBe('2026-09-14');
+    const manifestNames = new Map(realFs.manifests().map((manifest) => [manifest.name, manifest.path]));
+    const footprints = producedFootprints(record.producedLine, manifestNames).footprints;
+    expect([...footprints].sort()).toEqual(['apps/host', 'packages/host-gateway']);
+    const frozenFootprints = new Set<string>();
+    for (const entry of entries) {
+      for (const footprint of producedFootprints(entry.producedLine, manifestNames).footprints) {
+        frozenFootprints.add(footprint);
+      }
+    }
+    for (const footprint of footprints) {
+      expect(frozenFootprints.has(footprint), `${footprint} already frozen-owned`).toBe(false);
+    }
+    expect(entries.length).toBe(40);
   });
 
   it('keeps all 40 owner boundaries pairwise distinct', () => {

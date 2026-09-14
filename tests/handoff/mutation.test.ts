@@ -272,6 +272,57 @@ describe('mutation probes — family 4: unambiguous ownership', () => {
       ),
     ).toBe(true);
   });
+
+  it('MUTATION: stripping the post-freeze Produced claim fails closed naming the deployment manifests unclaimed', () => {
+    const mutated = world.implementationStatus.replace(
+      /^- Produced: `apps\/host` \(the browser host over @office\/web.*$/m,
+      '- Produced: (probe: claim stripped)',
+    );
+    const violations = checkOwnership({ ...world, implementationStatus: mutated }, realFs);
+    expect(
+      namesViolation(violations, 'is claimed by no work item\u0027s Produced line'),
+    ).toBe(true);
+    expect(namesViolation(violations, 'apps/host (@office/host)')).toBe(true);
+    expect(namesViolation(violations, 'packages/host-gateway (@office/host-gateway)')).toBe(true);
+    expect(
+      namesViolation(
+        violations,
+        'post-freeze entry OFF-DEPLOY has a Produced line naming no primary package/app path',
+      ),
+    ).toBe(true);
+  });
+
+  it('MUTATION: a post-freeze claim colliding with a frozen footprint fails closed naming both', () => {
+    const mutated = world.implementationStatus.replace(
+      /^- Produced: `apps\/host` \(the browser host over @office\/web.*$/m,
+      '- Produced: `packages/contracts` (probe: colliding claim)',
+    );
+    const violations = checkOwnership({ ...world, implementationStatus: mutated }, realFs);
+    expect(
+      namesViolation(
+        violations,
+        'ambiguous ownership: OFF-002 and the post-freeze entry OFF-DEPLOY both claim the primary footprint packages/contracts',
+      ),
+    ).toBe(true);
+  });
+
+  it('MUTATION: a malformed post-freeze heading fails closed naming the grammar', () => {
+    const mutated = world.implementationStatus.replace(
+      /^### OFF-DEPLOY Production deployment orchestration — DONE \(2026-09-14\)$/m,
+      '### OFF-DEPLOY Production deployment orchestration (in flight)',
+    );
+    const violations = checkOwnership({ ...world, implementationStatus: mutated }, realFs);
+    expect(
+      namesViolation(
+        violations,
+        'post-freeze heading not in the "### OFF-DEPLOY <title> — DONE (YYYY-MM-DD)" grammar',
+      ),
+    ).toBe(true);
+    // The malformed record cannot claim its manifests: both must surface as
+    // unclaimed (fail-closed — a broken record never silently no-ops).
+    expect(namesViolation(violations, 'apps/host (@office/host)')).toBe(true);
+    expect(namesViolation(violations, 'packages/host-gateway (@office/host-gateway)')).toBe(true);
+  });
 });
 
 describe('mutation probes — family 5: reproducible setup instructions', () => {
